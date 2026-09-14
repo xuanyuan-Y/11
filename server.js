@@ -322,9 +322,9 @@ wss.on('connection', (ws) => {
         if (player) {
           player.ready = msg.ready;
           broadcast(currentRoom, { type: 'roomUpdate', data: getPublicRoom(currentRoom) });
-          // 检查是否所有人都准备了
+          // 检查是否所有人都准备了（1人即可开局，空位自动补机器人）
           const allReady = currentRoom.players.every(p => p.ready || p.isBot);
-          const hasEnough = currentRoom.players.length >= 2;
+          const hasEnough = currentRoom.players.length >= 1;
           if (allReady && hasEnough && currentRoom.state === 'waiting') {
             // 空位补机器人
             const taken = new Set(currentRoom.players.map(p => p.seat));
