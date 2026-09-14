@@ -1,0 +1,12 @@
+{
+    "name": "guandan-online",
+    "version": "1.0.0",
+    "description": "在线多人掼蛋游戏",
+    "main": "server.js",
+    "scripts": {
+          "start": "node server.js"
+    },
+    "dependencies": {
+          "ws": "^8.16.0"
+    }
+}
