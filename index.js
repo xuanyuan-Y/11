@@ -42,6 +42,7 @@ io.on('connection', (socket) => {
       gameState: null
     });
     socket.join(roomId);
+    socket.roomId = roomId;
     callback({ success: true, roomId: roomId, password: password });
   });
 
@@ -121,6 +122,46 @@ io.on('connection', (socket) => {
     const aiName = 'AI-' + (room.playerNames.length + 1);
     room.players.push('AI-' + seatIndex);
     room.playerNames.push(aiName);
+
+    // 通知房间内所有人
+    io.to(room.id).emit('playerJoined', {
+      players: room.playerNames,
+      seats: room.seats,
+      host: room.host
+    });
+
+    callback({ success: true });
+  });
+
+  // 交换座位
+  socket.on('swapSeat', (data, callback) => {
+    const room = rooms.get(socket.roomId);
+    if (!room) {
+      callback({ success: false, message: '不在房间中' });
+      return;
+    }
+    if (room.host !== socket.id) {
+      callback({ success: false, message: '只有房主可以交换座位' });
+      return;
+    }
+
+    const { seat1, seat2 } = data;
+    if (seat1 < 0 || seat1 >= 4 || seat2 < 0 || seat2 >= 4) {
+      callback({ success: false, message: '座位号无效' });
+      return;
+    }
+    if (!room.seats[seat1] || !room.seats[seat2]) {
+      callback({ success: false, message: '空座位不能交换' });
+      return;
+    }
+
+    // 交换玩家位置
+    const tempPlayer = room.players[seat1];
+    const tempName = room.playerNames[seat1];
+    room.players[seat1] = room.players[seat2];
+    room.playerNames[seat1] = room.playerNames[seat2];
+    room.players[seat2] = tempPlayer;
+    room.playerNames[seat2] = tempName;
 
     // 通知房间内所有人
     io.to(room.id).emit('playerJoined', {
