@@ -1,0 +1,1983 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>港港掼蛋</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;user-select:none}
+body{
+    font-family:'Microsoft YaHei','PingFang SC',sans-serif;
+    background:radial-gradient(ellipse at center,#1e7a45 0%,#0d4f2c 60%,#072d18 100%);
+    color:#fff;overflow:hidden;height:100vh;width:100vw;position:relative;
+}
+.top-bar{
+    position:absolute;top:0;left:0;right:0;height:40px;
+    background:linear-gradient(180deg,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.4) 100%);
+    display:flex;justify-content:space-between;align-items:center;
+    padding:0 20px;z-index:100;border-bottom:1px solid rgba(255,215,0,0.3);
+}
+.top-bar .title{font-size:15px;font-weight:bold;color:#ffd700;text-shadow:0 1px 3px rgba(0,0,0,0.5)}
+.top-bar .info{display:flex;gap:10px;font-size:11px;align-items:center}
+.top-bar .info span{background:rgba(255,255,255,0.12);padding:3px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.1)}
+.top-bar .restart-btn{
+    background:linear-gradient(135deg,#ff9800,#e65100);color:#fff;border:none;
+    padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:bold;
+    box-shadow:0 2px 6px rgba(0,0,0,0.3);transition:all 0.2s;
+}
+.player{position:absolute;display:flex;flex-direction:column;align-items:center;z-index:10}
+.player .avatar{
+    width:40px;height:40px;border-radius:50%;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    display:flex;align-items:center;justify-content:center;font-size:20px;
+    border:2px solid #ffd700;box-shadow:0 3px 10px rgba(0,0,0,0.4);
+}
+.player .avatar.current{
+    border-color:#4caf50;box-shadow:0 0 15px rgba(76,175,80,0.8),0 3px 10px rgba(0,0,0,0.4);
+    animation:pulse 1.5s infinite;
+}
+@keyframes pulse{
+    0%,100%{box-shadow:0 0 15px rgba(76,175,80,0.8),0 3px 10px rgba(0,0,0,0.4)}
+    50%{box-shadow:0 0 25px rgba(76,175,80,1),0 3px 10px rgba(0,0,0,0.4)}
+}
+.player .name{font-size:13px;margin-top:4px;background:rgba(0,0,0,0.7);padding:3px 8px;border-radius:8px;font-weight:bold}
+.player .count{font-size:13px;color:#fff;margin-top:2px;font-weight:bold;text-shadow:0 1px 3px rgba(0,0,0,0.8)}
+.player .count.warn{color:#ff5252;font-size:15px;text-shadow:0 0 10px rgba(255,82,82,0.8)}
+.player.top{top:50px;left:50%;transform:translateX(-50%)}
+.player.left{top:40%;left:10px;transform:translateY(-50%)}
+.player.right{top:40%;right:10px;transform:translateY(-50%)}
+.player.bottom{bottom:185px;left:50%;transform:translateX(-50%)}
+
+.play-area{
+    position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);
+    width:300px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.play-cards{display:flex;gap:3px;min-height:75px;align-items:center;flex-wrap:wrap;justify-content:center}
+.play-info{font-size:16px;color:#ffd700;margin-top:12px;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.5);font-weight:bold}
+
+.player-cards{position:absolute;display:flex;gap:1px;z-index:5;flex-wrap:wrap;justify-content:center;max-width:180px}
+.player-cards.top-cards{top:120px;left:50%;transform:translateX(-50%)}
+.player-cards.left-cards{top:40%;left:60px;transform:translateY(-50%)}
+.player-cards.right-cards{top:40%;right:60px;transform:translateY(-50%)}
+
+.hand-area{
+    position:absolute;bottom:0;left:0;right:0;height:210px;
+    background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.3) 20%,rgba(0,0,0,0.6) 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px;z-index:20;
+}
+.hand-cards{display:flex;justify-content:center;align-items:flex-end;height:155px;position:relative;padding:0 15px}
+
+.card-group{display:flex;align-items:flex-end;margin:0 10px;position:relative;padding-top:16px}
+.card-group:first-child{margin-left:0}
+.group-label{
+    position:absolute;top:0;left:50%;transform:translateX(-50%);
+    font-size:9px;color:#fff;background:linear-gradient(135deg,rgba(255,152,0,0.9),rgba(230,81,0,0.9));
+    padding:1px 6px;border-radius:6px;white-space:nowrap;font-weight:bold;
+}
+
+.card{
+    width:58px;height:84px;background:linear-gradient(145deg,#ffffff 0%,#f5f5f5 100%);
+    border-radius:6px;display:flex;flex-direction:column;justify-content:space-between;
+    padding:4px 5px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.8);
+    cursor:pointer;transition:all 0.12s ease;position:relative;margin-left:-10px;border:1px solid #ccc;
+}
+.card:first-child{margin-left:0}
+.card.red{color:#d32f2f}
+.card.black{color:#212121}
+.card.wild{
+    background:linear-gradient(145deg,#ffd700 0%,#ff8c00 100%);color:#212121;
+    border:2px solid #ffd700;box-shadow:0 2px 10px rgba(255,215,0,0.5),inset 0 1px 0 rgba(255,255,255,0.5);
+}
+.card.selected{
+    transform:translateY(-22px);box-shadow:0 6px 15px rgba(255,215,0,0.7),0 2px 6px rgba(0,0,0,0.4);border:2px solid #ffd700;
+}
+.card:hover{transform:translateY(-10px)}
+.card.selected:hover{transform:translateY(-22px)}
+.card.dragging{
+    opacity:0.9;transform:translateY(-18px) scale(1.1) rotate(3deg);cursor:grabbing;z-index:1000;
+    box-shadow:0 12px 25px rgba(0,0,0,0.5);
+}
+.card.drop-target{border:2px dashed #2196f3 !important}
+.card .card-top{font-size:13px;line-height:1;display:flex;flex-direction:column;align-items:flex-start}
+.card .card-top .val{font-size:15px;font-weight:bold}
+.card .card-top .suit{font-size:12px;margin-top:-1px}
+.card .card-center{font-size:24px;text-align:center;line-height:1}
+.card .card-bottom{font-size:13px;line-height:1;transform:rotate(180deg);display:flex;flex-direction:column;align-items:flex-start}
+.card .card-bottom .val{font-size:15px;font-weight:bold}
+.card .card-bottom .suit{font-size:12px;margin-top:-1px}
+
+.mini-play-card{
+    width:44px;height:62px;background:linear-gradient(145deg,#ffffff 0%,#f5f5f5 100%);border-radius:5px;
+    display:flex;flex-direction:column;justify-content:space-between;padding:2px 3px;font-size:9px;font-weight:bold;
+    margin-left:-6px;border:1px solid #ccc;box-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+.mini-play-card:first-child{margin-left:0}
+.mini-play-card.red{color:#d32f2f}
+.mini-play-card.black{color:#212121}
+.mini-play-card .val{font-size:13px;font-weight:bold}
+.mini-play-card .suit{font-size:11px;text-align:center}
+
+.action-bar{display:flex;gap:8px;margin-top:6px;align-items:center}
+.action-btn{
+    padding:10px 20px;border-radius:8px;border:none;font-size:14px;font-weight:bold;cursor:pointer;
+    transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.3);text-shadow:0 1px 2px rgba(0,0,0,0.2);
+}
+.action-btn:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,0.4)}
+.action-btn:active{transform:translateY(0)}
+.action-btn:disabled{background:#555 !important;cursor:not-allowed;transform:none !important;box-shadow:none !important;opacity:0.6}
+.action-btn.play{background:linear-gradient(135deg,#4caf50,#2e7d32);color:#fff}
+.action-btn.pass{background:linear-gradient(135deg,#ff9800,#e65100);color:#fff}
+.action-btn.hint{background:linear-gradient(135deg,#2196f3,#1565c0);color:#fff}
+.action-btn.sort{background:linear-gradient(135deg,#9c27b0,#6a1b9a);color:#fff}
+.action-btn.manual{background:linear-gradient(135deg,#ff5722,#bf360c);color:#fff}
+.action-btn.manual.active{background:linear-gradient(135deg,#4caf50,#2e7d32)}
+.action-btn.restore{background:linear-gradient(135deg,#795548,#4e342e);color:#fff}
+.action-btn.group{background:linear-gradient(135deg,#00bcd4,#00838f);color:#fff}
+
+.sort-tip{
+    position:absolute;top:48px;left:50%;transform:translateX(-50%);
+    background:linear-gradient(135deg,rgba(255,152,0,0.95),rgba(230,81,0,0.95));color:#fff;
+    padding:6px 14px;border-radius:15px;font-size:11px;z-index:50;display:none;
+    box-shadow:0 3px 10px rgba(0,0,0,0.4);font-weight:bold;
+}
+.sort-tip.show{display:block;animation:slideDown 0.3s ease}
+@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+.hint-modal{
+    position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);
+    display:flex;align-items:center;justify-content:center;z-index:1000;display:none;
+}
+.hint-modal.show{display:flex}
+.hint-box{
+    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:20px;border-radius:15px;text-align:center;
+    border:2px solid #2196f3;max-width:450px;max-height:70vh;overflow-y:auto;
+    box-shadow:0 15px 50px rgba(0,0,0,0.5);
+}
+.hint-box h3{font-size:16px;color:#2196f3;margin-bottom:12px}
+.hint-options{display:flex;flex-direction:column;gap:8px}
+.hint-option{
+    background:rgba(255,255,255,0.08);padding:8px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s;
+    display:flex;align-items:center;justify-content:space-between;border:1px solid transparent;
+}
+.hint-option:hover{background:rgba(33,150,243,0.25);border-color:#2196f3;transform:translateX(4px)}
+.hint-option .hint-cards{display:flex;gap:1px;align-items:center}
+.hint-option .hint-label{font-size:11px;color:#ffd700;margin-left:8px;font-weight:bold}
+.hint-close{
+    margin-top:12px;background:linear-gradient(135deg,#666,#444);color:#fff;border:none;
+    padding:7px 18px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:bold;transition:all 0.2s;
+}
+.hint-close:hover{background:linear-gradient(135deg,#777,#555)}
+
+.game-over-modal{
+    position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);
+    display:flex;align-items:center;justify-content:center;z-index:1000;display:none;
+}
+.game-over-modal.show{display:flex}
+.game-over-box{
+    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:30px;border-radius:18px;text-align:center;
+    border:2px solid #ffd700;max-width:350px;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:popIn 0.4s ease;
+}
+@keyframes popIn{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+.game-over-box h2{font-size:24px;color:#ffd700;margin-bottom:15px}
+.game-over-box p{font-size:13px;margin:8px 0;color:#ccc}
+.game-over-box .result{font-size:22px;font-weight:bold;margin:15px 0}
+.game-over-box .win{color:#4caf50;text-shadow:0 0 15px rgba(76,175,80,0.5)}
+.game-over-box .lose{color:#f44336;text-shadow:0 0 15px rgba(244,67,54,0.5)}
+
+.toast{
+    position:fixed;top:48px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#fff;
+    padding:8px 20px;border-radius:15px;font-size:12px;z-index:2000;display:none;
+    box-shadow:0 4px 12px rgba(0,0,0,0.4);font-weight:bold;
+}
+.toast.show{display:block;animation:fadeIn 0.3s}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,0.2)}
+::-webkit-scrollbar-thumb{background:rgba(255,215,0,0.5);border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="title">🎴 港港掼蛋</div>
+    <div class="info">
+        <span id="levelInfo">打2</span>
+        <span id="scoreInfo">我方:0 对方:0</span>
+        <span id="roundInfo">第1局</span>
+    </div>
+    <button class="restart-btn" onclick="restartGame()">🔄 重新开始</button>
+</div>
+
+<div class="player top"><div class="avatar" id="avatarTop">🤖</div><div class="name">对家(队友)</div><div class="count" id="countTop">27张</div></div>
+<div class="player left"><div class="avatar" id="avatarLeft">🤖</div><div class="name">上家</div><div class="count" id="countLeft">27张</div></div>
+<div class="player right"><div class="avatar" id="avatarRight">🤖</div><div class="name">下家</div><div class="count" id="countRight">27张</div></div>
+<div class="player bottom"><div class="avatar current">😊</div><div class="name">你</div><div class="count" id="countBottom">27张</div></div>
+
+<div class="play-area">
+    <div class="play-cards" id="playCards"></div>
+    <div class="play-info" id="playInfo">等待发牌...</div>
+</div>
+
+<div class="player-cards top-cards" id="topCards"></div>
+<div class="player-cards left-cards" id="leftCards"></div>
+<div class="player-cards right-cards" id="rightCards"></div>
+
+<div class="sort-tip" id="sortTip">🔀 拖拽牌到目标位置，支持多选一起拖拽</div>
+
+<div class="hand-area">
+    <div class="hand-cards" id="handCards"></div>
+    <div class="action-bar">
+        <button class="action-btn sort" onclick="smartSort()">✨ 一键理牌</button>
+        <button class="action-btn manual" id="manualBtn" onclick="toggleManual()">🔀 手动理牌</button>
+        <button class="action-btn restore" id="restoreBtn" onclick="restoreSort()" style="display:none">↩️ 恢复理牌</button>
+        <button class="action-btn cancel-sel" id="cancelSelBtn" onclick="cancelSelection()" style="display:none">❌ 取消选择</button>
+        <button class="action-btn group" id="groupBtn" onclick="groupSelected()">📦 组牌</button>
+        <button class="action-btn hint" onclick="showHint()">💡 提示</button>
+        <button class="action-btn pass" id="passBtn" onclick="passPlay()" disabled>不要</button>
+        <button class="action-btn play" id="playBtn" onclick="playCards()" disabled>出牌</button>
+    </div>
+</div>
+
+<div class="hint-modal" id="hintModal">
+    <div class="hint-box">
+        <h3>💡 出牌建议</h3>
+        <div class="hint-options" id="hintOptions"></div>
+        <button class="hint-close" onclick="closeHint()">关闭</button>
+    </div>
+</div>
+
+<div class="game-over-modal" id="gameOverModal">
+    <div class="game-over-box">
+        <h2>🎉 游戏结束</h2>
+        <p id="gameOverDesc"></p>
+        <div class="result" id="gameOverResult"></div>
+        <p id="gameOverLevel"></p>
+        <button class="action-btn play" onclick="restartGame()">再来一局</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUITS = ['♠','♥','♣','♦'];
+const SUIT_COLOR = {'♠':'black','♥':'red','♣':'black','♦':'red'};
+const VALUES = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+// 牌面值（用于顺子判断等，级牌按面值算）
+const VAL = {'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14};
+// 级牌比A大，比小王小：A=14, 级牌=15, 小王=16, 大王=17
+
+let G = {
+    level: 2, round: 1, current: 0, hands: [[],[],[],[]], selected: [],
+    lastPlay: null, lastPlayer: -1, passCount: 0, scores: [0,0], over: false,
+    manualMode: false, manualSel: -1, dragIndex: -1, originalOrder: null,
+    finishOrder: [], aiLevel: 'normal', dragging: false, dragCards: [],
+    // 记牌器：记录所有已出的牌
+    playedCards: [],
+    // 每个玩家出的牌（用于推算）
+    playerPlayed: [[],[],[],[]]
+};
+
+// cv函数：用于排序和比较大小，级牌按15算（比A大，比小王小）
+function cv(c){ if(c.value==='小王')return 16; if(c.value==='大王')return 17; if(c.value===String(G.level))return 15; return VAL[c.value]||0; }
+// cvRaw函数：用于顺子判断，级牌按面值算
+function cvRaw(c){ if(c.value==='小王')return 16; if(c.value==='大王')return 17; return VAL[c.value]||0; }
+function cdv(c){ return c.value==='小王'?'小':c.value==='大王'?'大':c.value; }
+function isWild(c){ return c.value===String(G.level) && c.suit==='♥'; }
+
+// 算牌：计算外面还剩几张某种牌
+function countRemaining(value){
+    // 总共有8张（两副牌）
+    const total = 8;
+    // 已经出了几张
+    const played = G.playedCards.filter(c=>c.value===value).length;
+    // 自己手里有几张
+    const inHand = G.hands[0].filter(c=>c.value===value).length;
+    // 外面还剩几张
+    return total - played - inHand;
+}
+
+// 算牌：外面还有几张王
+function countKingsRemaining(){
+    // 小王总共有2张，大王总共有2张
+    const played = G.playedCards.filter(c=>c.value==='小王'||c.value==='大王').length;
+    const inHand = G.hands[0].filter(c=>c.value==='小王'||c.value==='大王').length;
+    return 4 - played - inHand;
+}
+
+// 算牌：外面还有几张级牌
+function countLevelRemaining(){
+    // 级牌总共有8张（4个花色×2副）
+    const total = 8;
+    const played = G.playedCards.filter(c=>c.value===String(G.level)).length;
+    const inHand = G.hands[0].filter(c=>c.value===String(G.level)).length;
+    return total - played - inHand;
+}
+// 排序：从大到小，逢人配在最左，然后大王小王，然后级牌，然后其他
+function sortByVal(arr){ 
+    return [...arr].sort((a,b)=>{
+        // 逢人配排最左
+        const aWild=isWild(a)?100:0, bWild=isWild(b)?100:0;
+        if(aWild!==bWild) return bWild-aWild;
+        return cv(b)-cv(a);
+    }); 
+}
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
+
+function createDeck(){
+    let d=[];
+    for(let k=0;k<2;k++){
+        for(let s of SUITS) for(let v of VALUES) d.push({suit:s,value:v,id:k+'-'+s+'-'+v});
+        d.push({suit:'',value:'小王',id:k+'-小王'});
+        d.push({suit:'',value:'大王',id:k+'-大王'});
+    }
+    return d;
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+// 检查是否为顺子（支持A-2-3-4-5，级牌按面值算）
+function isStraight(cards){
+    if(cards.length<5) return false;
+    const vals = cards.map(c=>cvRaw(c)).sort((a,b)=>a-b);
+    // 普通顺子：3-4-5-6-7 ... 10-J-Q-K-A
+    let normal = true;
+    for(let i=0;i<vals.length-1;i++){
+        if(vals[i+1]-vals[i]!==1){ normal=false; break; }
+    }
+    if(normal && vals[vals.length-1]<=14) return true;
+    // A-2-3-4-5特殊顺子：vals排序后是2,3,4,5,14（A=14, 2=2）
+    if(cards.length===5){
+        const special = [2,3,4,5,14];
+        if(vals.length===5 && vals.every((v,i)=>v===special[i])) return true;
+    }
+    return false;
+}
+
+// 检查是否为同花顺（支持A-2-3-4-5同花顺）
+function isStraightFlush(cards){
+    if(cards.length<5) return false;
+    const suit = cards[0].suit;
+    if(!suit || !cards.every(c=>c.suit===suit)) return false;
+    return isStraight(cards);
+}
+
+function getType(cards){
+    if(!cards||!cards.length) return null;
+    const s=sortByVal(cards), n=s.length;
+    const w=s.filter(c=>isWild(c)).length;
+    const nonWild=s.filter(c=>!isWild(c));
+    
+    // 天王炸（4张王）
+    if(n===4 && s.every(c=>c.value==='小王'||c.value==='大王')) return {type:'rocket',val:100,len:4};
+    
+    // 统计非wild牌的value count
+    const vc={};
+    for(let c of nonWild) vc[c.value]=(vc[c.value]||0)+1;
+    
+    // ========== 炸弹（含逢人配）==========
+    // 所有牌都是同一个值（或wild补），且数量>=4
+    for(let v in vc){
+        if(vc[v]+w>=4 && n===vc[v]+w) return {type:'bomb',val:cv({value:v}),len:n};
+    }
+    if(w>=4 && n===w) return {type:'bomb',val:17,len:n};
+    
+    // ========== 同花顺（含逢人配，5-6张）==========
+    if(n>=5 && n<=6){
+        // 按花色分组
+        const sg={};
+        for(let c of nonWild) if(c.suit){ if(!sg[c.suit])sg[c.suit]=[]; sg[c.suit].push(c); }
+        for(let suit in sg){
+            const sc=sg[suit].map(c=>cv(c)).sort((a,b)=>a-b);
+            // 尝试每个起始值
+            for(let start=2; start<=15-n+1; start++){
+                let needed=0;
+                for(let i=0;i<n;i++) if(!sc.includes(start+i)) needed++;
+                if(needed<=w && (sc.length+w)>=n) return {type:'sf',val:start+n-1,len:n};
+            }
+            // A-2-3-4-5特殊同花顺
+            if(n===5){
+                const special=[3,4,5,14,15];
+                let needed=0;
+                for(let v of special) if(!sc.includes(v)) needed++;
+                if(needed<=w) return {type:'sf',val:15,len:5};
+            }
+        }
+    }
+    
+    // ========== 顺子（含逢人配，5-6张）==========
+    if(n>=5 && n<=6){
+        const vals=[...new Set(nonWild.map(c=>cv(c)))].sort((a,b)=>a-b);
+        // 尝试每个起始值
+        for(let start=2; start<=15-n+1; start++){
+            let needed=0;
+            for(let i=0;i<n;i++) if(!vals.includes(start+i)) needed++;
+            if(needed<=w) return {type:'straight',val:start+n-1,len:n};
+        }
+        // A-2-3-4-5特殊顺子
+        if(n===5){
+            const special=[3,4,5,14,15];
+            let needed=0;
+            for(let v of special) if(!vals.includes(v)) needed++;
+            if(needed<=w) return {type:'straight',val:15,len:5};
+        }
+    }
+    
+    // ========== 两连三（钢板，6张）==========
+    if(n===6){
+        const tvals=Object.keys(vc).filter(v=>vc[v]>=3).map(v=>cv({value:v})).sort((a,b)=>a-b);
+        // 有3张的+wild补3张
+        const possibleT=[];
+        for(let v in vc) if(vc[v]>=2) possibleT.push(cv({value:v}));
+        possibleT.sort((a,b)=>a-b);
+        for(let i=0;i<=possibleT.length-2;i++){
+            if(possibleT[i+1]-possibleT[i]===1){
+                // 检查是否有足够的wild补成两个三张
+                let need=0;
+                const v1=Object.keys(vc).find(v=>cv({value:v})===possibleT[i]);
+                const v2=Object.keys(vc).find(v=>cv({value:v})===possibleT[i+1]);
+                if(v1 && vc[v1]<3) need+=(3-vc[v1]);
+                if(v2 && vc[v2]<3) need+=(3-vc[v2]);
+                if(need<=w && n===6) return {type:'steel',val:possibleT[i+1],len:6};
+            }
+        }
+    }
+    
+    // ========== 三连对（木板，6张）==========
+    if(n===6){
+        const pvals=Object.keys(vc).filter(v=>vc[v]>=2).map(v=>cv({value:v})).sort((a,b)=>a-b);
+        // 有1张的+wild补成对
+        const possibleP=[];
+        for(let v in vc) if(vc[v]>=1) possibleP.push(cv({value:v}));
+        possibleP.sort((a,b)=>a-b);
+        for(let i=0;i<=possibleP.length-3;i++){
+            if(possibleP[i+1]-possibleP[i]===1 && possibleP[i+2]-possibleP[i+1]===1){
+                let need=0;
+                for(let j=0;j<3;j++){
+                    const v=Object.keys(vc).find(v=>cv({value:v})===possibleP[i+j]);
+                    if(v && vc[v]<2) need+=(2-vc[v]);
+                }
+                if(need<=w && n===6) return {type:'tp',val:possibleP[i+2],len:6};
+            }
+        }
+    }
+    
+    // ========== 三带二（5张）==========
+    if(n===5){
+        // 找三张（或2张+1wild）和对子（或1张+1wild）
+        const tripleVals=Object.keys(vc).filter(v=>vc[v]>=2).map(v=>({v,count:vc[v]})).sort((a,b)=>b.count-a.count);
+        for(let t of tripleVals){
+            const needT=3-t.count;
+            if(needT>w) continue;
+            const remainW=w-needT;
+            // 找对子
+            for(let p in vc){
+                if(p===t.v) continue;
+                const needP=2-vc[p];
+                if(needP<=remainW && (vc[p]+needP)===2){
+                    // 检查总牌数
+                    if(t.count+vc[p]+w===5) return {type:'t2',val:cv({value:t.v}),len:5};
+                }
+            }
+            // 对子也可以是wild补的（如果只有三张+2wild）
+            if(t.count===3 && w===2) return {type:'t2',val:cv({value:t.v}),len:5};
+        }
+    }
+    
+    // ========== 三张（3张）==========
+    if(n===3){
+        for(let v in vc) if(vc[v]===3) return {type:'triple',val:cv({value:v}),len:3};
+        if(w>=1){
+            for(let v in vc) if(vc[v]===2) return {type:'triple',val:cv({value:v}),len:3};
+        }
+        if(w>=3) return {type:'triple',val:17,len:3};
+    }
+    
+    // ========== 对子（2张）==========
+    if(n===2){
+        if(s[0].value===s[1].value && !isWild(s[0])) return {type:'pair',val:cv(s[0]),len:2};
+        if(w===1){ const nw=s.find(c=>!isWild(c)); if(nw) return {type:'pair',val:cv(nw),len:2}; }
+        if(s[0].value==='小王'&&s[1].value==='大王') return {type:'pair',val:17,len:2};
+        // 两张逢人配组成的对子，就是级牌对子，val=15，不是17
+    if(w===2) return {type:'pair',val:15,len:2};
+    }
+    
+    // ========== 单张 ==========
+    if(n===1) {
+        // 单张逢人配就是普通级牌，cv=15，不能压王
+        // 确保逢人配单独出时，大小就是级牌大小
+        const c = s[0];
+        let val = cv(c);
+        // 逢人配就是级牌，不管怎么配，单独出就是级牌大小
+        if(isWild(c)) val = 15;
+        return {type:'single', val:val, len:1};
+    }
+    
+    return null;
+}
+
+function canBeat(pt, lp){
+    if(!lp) return true;
+    if(pt.type==='rocket') return true;
+    if(pt.type==='bomb'){
+        if(lp.type!=='bomb'&&lp.type!=='rocket'&&lp.type!=='sf') return true;
+        if(lp.type==='rocket') return false;
+        if(lp.type==='sf') return pt.len>=5;
+        if(pt.len!==lp.len) return pt.len>lp.len;
+        return pt.val>lp.val;
+    }
+    if(pt.type==='sf'){
+        if(lp.type==='rocket') return false;
+        if(lp.type==='bomb'){ if(lp.len<=4)return true; if(lp.len>=6)return false; return pt.val>lp.val; }
+        if(lp.type==='sf'){ if(pt.len!==lp.len)return pt.len>lp.len; return pt.val>lp.val; }
+        return false;
+    }
+    if(pt.type!==lp.type) return false;
+    if(pt.len!==lp.len) return false;
+    return pt.val>lp.val;
+}
+
+function smartSortCards(hand){
+    // 多乐掼蛋风格：简单从大到小排序，不分组
+    // 顺序：逢人配 → 大王 → 小王 → 级牌 → A → K → Q → J → 10 → 9 → 8 → 7 → 6 → 5 → 4 → 3 → 2（非级牌）
+    const sorted = sortByVal(hand);
+    return [{cards:sorted,label:''}];
+}
+
+function findHints(hand, lp){
+    const res=[];
+    const s=sortByVal(hand);
+    const normalHints=[]; // 普通牌型
+    const bombHints=[];   // 炸弹
+    
+    if(!lp){
+        // 首家出牌：列出各种牌型（普通牌型优先）
+        const nw=s.filter(c=>!isWild(c)&&cv(c)<=14);
+        const vc={};
+        for(let c of nw) vc[c.value]=(vc[c.value]||0)+1;
+        
+        // 对子（优先）
+        for(let v in vc){ if(vc[v]>=2){ normalHints.push({cards:nw.filter(c=>c.value===v).slice(0,2),label:'对子'}); break; } }
+        
+        // 三带二
+        for(let v in vc){ if(vc[v]>=3){
+            const triple=nw.filter(c=>c.value===v).slice(0,3);
+            for(let v2 in vc){ if(v2!==v&&vc[v2]>=2){ normalHints.push({cards:[...triple,...nw.filter(c=>c.value===v2).slice(0,2)],label:'三带二'}); break; } }
+            break;
+        }}
+        
+        // 顺子
+        const sorted=nw.filter(c=>cv(c)>=2&&cv(c)<=15).sort((a,b)=>cv(a)-cv(b));
+        for(let st=0;st<=sorted.length-5;st++){
+            const slice=sorted.slice(st,st+5);
+            if(isStraight(slice)){ normalHints.push({cards:slice,label:'顺子'}); break; }
+        }
+        
+        // 单张（最后）
+        if(nw.length){ normalHints.push({cards:[nw[0]],label:'单张'}); }
+        
+        // 炸弹（最后）
+        const vc2={};
+        for(let c of s) if(!isWild(c)) vc2[c.value]=(vc2[c.value]||0)+1;
+        const bvs=Object.keys(vc2).filter(v=>vc2[v]>=4).sort((a,b)=>cv({value:a})-cv({value:b}));
+        for(let bv of bvs){
+            bombHints.push({cards:s.filter(c=>c.value===bv),label:bv+'炸'});
+        }
+    } else {
+        // 压牌：找所有能压的普通牌型
+        if(lp.type==='single'){
+            for(let i=s.length-1;i>=0;i--){ if(!isWild(s[i])&&cv(s[i])>lp.val){ normalHints.push({cards:[s[i]],label:'单张'}); break; } }
+        } else if(lp.type==='pair'){
+            const vc={};
+            for(let c of s) if(!isWild(c)) vc[c.value]=(vc[c.value]||0)+1;
+            const pvs=Object.keys(vc).filter(v=>vc[v]>=2&&cv({value:v})>lp.val).sort((a,b)=>cv({value:a})-cv({value:b}));
+            if(pvs.length) normalHints.push({cards:s.filter(c=>c.value===pvs[0]).slice(0,2),label:'对子'});
+        } else if(lp.type==='triple'){
+            const vc={};
+            for(let c of s) if(!isWild(c)) vc[c.value]=(vc[c.value]||0)+1;
+            const tvs=Object.keys(vc).filter(v=>vc[v]>=3&&cv({value:v})>lp.val).sort((a,b)=>cv({value:a})-cv({value:b}));
+            if(tvs.length) normalHints.push({cards:s.filter(c=>c.value===tvs[0]).slice(0,3),label:'三张'});
+        } else if(lp.type==='t2'){
+            const vc={};
+            for(let c of s) if(!isWild(c)) vc[c.value]=(vc[c.value]||0)+1;
+            const tvs=Object.keys(vc).filter(v=>vc[v]>=3&&cv({value:v})>lp.val).sort((a,b)=>cv({value:a})-cv({value:b}));
+            for(let tv of tvs){
+                const triple=s.filter(c=>c.value===tv).slice(0,3);
+                for(let pv in vc){ if(pv!==tv&&vc[pv]>=2){ normalHints.push({cards:[...triple,...s.filter(c=>c.value===pv).slice(0,2)],label:'三带二'}); break; } }
+                if(normalHints.length) break;
+            }
+        } else if(lp.type==='straight'||lp.type==='sf'){
+            const nw=s.filter(c=>!isWild(c)&&cv(c)>=2&&cv(c)<=15).sort((a,b)=>cv(a)-cv(b));
+            for(let st=0;st<=nw.length-lp.len;st++){
+                const slice=nw.slice(st,st+lp.len);
+                if(isStraight(slice)&&cv(slice[slice.length-1])>lp.val){
+                    if(lp.type==='sf'){
+                        const suit=slice[0].suit;
+                        if(slice.every(c=>c.suit===suit)){ normalHints.push({cards:slice,label:'同花顺'}); break; }
+                    } else { normalHints.push({cards:slice,label:'顺子'}); break; }
+                }
+            }
+        }
+        
+        // 炸弹（最后）
+        const vc2={};
+        for(let c of s) if(!isWild(c)) vc2[c.value]=(vc2[c.value]||0)+1;
+        const bvs=Object.keys(vc2).filter(v=>vc2[v]>=4).sort((a,b)=>cv({value:a})-cv({value:b}));
+        for(let bv of bvs){
+            const bc=s.filter(c=>c.value===bv);
+            const bt={type:'bomb',val:cv({value:bv}),len:bc.length};
+            if(canBeat(bt,lp)){ bombHints.push({cards:bc,label:bv+'炸'}); break; }
+        }
+    }
+    
+    // 普通牌型在前，炸弹在后
+    return [...normalHints, ...bombHints];
+}
+
+function showHint(){
+    if(G.current!==0||G.over){ toast('还没轮到你'); return; }
+    const hints=findHints(G.hands[0],G.lastPlay);
+    const box=document.getElementById('hintOptions');
+    box.innerHTML='';
+    if(!hints.length){ box.innerHTML='<p style="color:#999;padding:15px">没有能压的牌，建议"不要"</p>'; }
+    else {
+        for(let h of hints){
+            const opt=document.createElement('div');
+            opt.className='hint-option';
+            opt.onclick=function(){
+                G.selected=[...h.cards];
+                closeHint();
+                renderHand();
+                updateBtns();
+                toast('已选中：'+h.label);
+            };
+            const cd=document.createElement('div'); cd.className='hint-cards';
+            for(let c of h.cards){
+                const mc=document.createElement('div');
+                mc.className='mini-play-card '+(SUIT_COLOR[c.suit]||'black');
+                mc.innerHTML='<div class="val">'+cdv(c)+'</div><div class="suit">'+(c.suit||'')+'</div>';
+                cd.appendChild(mc);
+            }
+            const lb=document.createElement('div'); lb.className='hint-label'; lb.textContent=h.label;
+            opt.appendChild(cd); opt.appendChild(lb);
+            box.appendChild(opt);
+        }
+    }
+    document.getElementById('hintModal').classList.add('show');
+}
+function closeHint(){ document.getElementById('hintModal').classList.remove('show'); }
+
+function renderCard(c, sel, dragIndex){
+    const d=document.createElement('div');
+    d.className='card '+(SUIT_COLOR[c.suit]||'black')+(isWild(c)?' wild':'')+(sel?' selected':'')+(dragIndex===true?' dragging':'');
+    d.innerHTML=
+        '<div class="card-top"><span class="val">'+cdv(c)+'</span><span class="suit">'+(c.suit||'')+'</span></div>'+
+        '<div class="card-center">'+(c.suit||(c.value==='小王'?'🃏':'👑'))+'</div>'+
+        '<div class="card-bottom"><span class="val">'+cdv(c)+'</span><span class="suit">'+(c.suit||'')+'</span></div>';
+    return d;
+}
+
+// 全模式拖拽：支持单张和多选一起拖拽，点击选牌
+function setupDrag(cardEl, index, handContainer){
+    cardEl.addEventListener('mousedown',function(e){
+        e.preventDefault();
+        if(G.current!==0||G.over) return;
+        const startX=e.clientX, startY=e.clientY;
+        let hasMoved=false;
+        let dragIndices=null;
+        
+        const onMove=function(ev){
+            const dx=Math.abs(ev.clientX-startX), dy=Math.abs(ev.clientY-startY);
+            if(!hasMoved && (dx>5||dy>5)){
+                // 开始拖拽：确定要拖拽的牌
+                hasMoved=true;
+                const isSelected = G.selected.some(x=>x.id===G.hands[0][index].id);
+                if(isSelected && G.selected.length>1){
+                    dragIndices = G.selected.map(c=>G.hands[0].findIndex(h=>h.id===c.id)).filter(i=>i>=0).sort((a,b)=>a-b);
+                } else {
+                    dragIndices=[index];
+                }
+                cardEl.classList.add('dragging');
+            }
+            if(hasMoved && dragIndices){
+                const cards=handContainer.querySelectorAll('.card');
+                cards.forEach(function(cd,idx){
+                    cd.classList.remove('drop-target');
+                    if(!dragIndices.includes(idx)){
+                        const rect=cd.getBoundingClientRect();
+                        if(ev.clientX>=rect.left&&ev.clientX<=rect.right) cd.classList.add('drop-target');
+                    }
+                });
+            }
+        };
+        const onUp=function(ev){
+            document.removeEventListener('mousemove',onMove);
+            document.removeEventListener('mouseup',onUp);
+            cardEl.classList.remove('dragging');
+            
+            if(!hasMoved){
+                // 只是点击：选牌
+                toggleSel(G.hands[0][index]);
+                return;
+            }
+            
+            // 拖拽：移动牌
+            const cards=handContainer.querySelectorAll('.card');
+            let targetIdx=-1;
+            cards.forEach(function(cd,idx){
+                if(cd.classList.contains('drop-target')){
+                    const rect=cd.getBoundingClientRect();
+                    if(ev.clientX<rect.left+rect.width/2) targetIdx=idx;
+                    else targetIdx=idx+1;
+                }
+                cd.classList.remove('drop-target');
+            });
+            if(targetIdx>=0 && dragIndices){
+                const toMove=dragIndices.map(i=>G.hands[0][i]);
+                const sortedDrag=[...dragIndices].sort((a,b)=>b-a);
+                for(let i of sortedDrag) G.hands[0].splice(i,1);
+                let insertIdx=targetIdx;
+                for(let i of sortedDrag) if(i<targetIdx) insertIdx--;
+                G.hands[0].splice(insertIdx,0,...toMove);
+                G.selected=[...toMove];
+                renderHand();
+                toast('已移动'+toMove.length+'张牌');
+            }
+        };
+        document.addEventListener('mousemove',onMove);
+        document.addEventListener('mouseup',onUp);
+    });
+}
+
+function renderHand(){
+    const hc=document.getElementById('handCards');
+    hc.innerHTML='';
+    if(G.manualMode){
+        // 手动理牌模式：平铺显示，支持拖拽
+        for(let i=0;i<G.hands[0].length;i++){
+            const c=G.hands[0][i];
+            const sel=G.selected.some(x=>x.id===c.id);
+            const card=renderCard(c,sel);
+            setupDrag(card,i,hc);
+            hc.appendChild(card);
+        }
+    } else {
+        // 智能理牌模式：分组显示，也支持拖拽
+        const groups=smartSortCards(G.hands[0]);
+        for(let g of groups){
+            const gd=document.createElement('div');
+            gd.className='card-group';
+            const lb=document.createElement('div');
+            lb.className='group-label';
+            lb.textContent=g.label;
+            gd.appendChild(lb);
+            for(let c of g.cards){
+                const sel=G.selected.some(x=>x.id===c.id);
+                const idx=G.hands[0].findIndex(h=>h.id===c.id);
+                const card=renderCard(c,sel);
+                if(idx>=0) setupDrag(card,idx,hc);
+                gd.appendChild(card);
+            }
+            hc.appendChild(gd);
+        }
+    }
+    document.getElementById('countBottom').textContent=G.hands[0].length+'张';
+}
+
+function renderPlayCards(cards, id){
+    const c=document.getElementById(id);
+    c.innerHTML='';
+    if(!cards||!cards.length) return;
+    for(let card of cards){
+        const d=document.createElement('div');
+        d.className='mini-play-card '+(SUIT_COLOR[card.suit]||'black');
+        d.innerHTML='<div class="val">'+cdv(card)+'</div><div class="suit">'+(card.suit||'')+'</div>';
+        c.appendChild(d);
+    }
+}
+
+function updateBtns(){
+    const pb=document.getElementById('playBtn'), pcb=document.getElementById('passBtn');
+    if(G.current===0&&!G.over){
+        pb.disabled=G.selected.length===0;
+        pcb.disabled=G.lastPlay===null;
+    } else { pb.disabled=true; pcb.disabled=true; }
+    // 高亮当前出牌玩家的头像
+    const avatars = ['avatarTop', 'avatarRight', 'avatarBottom', 'avatarLeft'];
+    const playerAvatars = [null, 'avatarRight', 'avatarTop', 'avatarLeft']; // 玩家0=你（底部），玩家1=下家（右），玩家2=对家（上），玩家3=上家（左）
+    for(let i=0;i<4;i++){
+        const el = playerAvatars[i] ? document.getElementById(playerAvatars[i]) : null;
+        if(el){
+            if(i===G.current && !G.over){
+                el.style.boxShadow = '0 0 20px #ffd700, 0 0 30px #ffd700';
+                el.style.border = '3px solid #ffd700';
+            } else {
+                el.style.boxShadow = 'none';
+                el.style.border = '2px solid transparent';
+            }
+        }
+    }
+}
+
+function updateCounts(){
+    // 只有≤10张才显示牌数（掼蛋规则），自己的牌数一直显示
+    // 玩家位置：0=自己(底部), 1=下家(右侧), 2=对家(顶部), 3=上家(左侧)
+    const topCount=G.hands[2].length, leftCount=G.hands[3].length, rightCount=G.hands[1].length;
+    const topEl=document.getElementById('countTop'), leftEl=document.getElementById('countLeft'), rightEl=document.getElementById('countRight');
+    topEl.textContent=topCount<=10?topCount+'张':''; topEl.className='count'+(topCount<=10?' warn':'');
+    leftEl.textContent=leftCount<=10?leftCount+'张':''; leftEl.className='count'+(leftCount<=10?' warn':'');
+    rightEl.textContent=rightCount<=10?rightCount+'张':''; rightEl.className='count'+(rightCount<=10?' warn':'');
+    document.getElementById('countBottom').textContent=G.hands[0].length+'张';
+}
+
+function initGame(){
+    const deck=shuffle(createDeck());
+    G.hands=[[],[],[],[]];
+    for(let i=0;i<108;i++) G.hands[i%4].push(deck[i]);
+    G.current=Math.floor(Math.random()*4);
+    G.lastPlay=null; G.lastPlayer=-1; G.passCount=0;
+    G.selected=[]; G.over=false; G.manualMode=false; G.manualSel=-1; G.originalOrder=null;
+    G.finishOrder=[];
+    // 记牌系统：记录每个玩家出过的牌
+    G.playedCards=[[],[],[],[]];
+    // 进贡还贡状态
+    G.tributeState=null; // null=无, 'need_tribute'=需要进贡, 'need_return'=需要还贡
+    G.tributeFrom=-1; // 进贡方
+    G.tributeTo=-1; // 收贡方
+    G.returnCard=null; // 还贡的牌
+    document.getElementById('levelInfo').textContent='打'+(G.level===1?'A':G.level);
+    document.getElementById('roundInfo').textContent='第'+G.round+'局';
+    document.getElementById('scoreInfo').textContent='我方:'+G.scores[0]+' 对方:'+G.scores[1];
+    document.getElementById('gameOverModal').classList.remove('show');
+    document.getElementById('hintModal').classList.remove('show');
+    document.getElementById('sortTip').classList.remove('show');
+    document.getElementById('manualBtn').classList.remove('active');
+    document.getElementById('restoreBtn').style.display='none';
+    document.getElementById('cancelSelBtn').style.display='none';
+    document.getElementById('groupBtn').style.display='inline-block';
+    renderHand(); updateBtns(); updateCounts();
+    const names=['你','下家','对家','上家'];
+    document.getElementById('playInfo').textContent=names[G.current]+'先出牌';
+    if(G.current!==0) setTimeout(aiPlay,1000);
+}
+
+function toggleSel(c){
+    if(G.current!==0||G.over) return;
+    const i=G.selected.findIndex(x=>x.id===c.id);
+    if(i>=0) G.selected.splice(i,1); else G.selected.push(c);
+    renderHand(); updateBtns();
+}
+
+function playCards(){
+    if(G.current!==0||G.over||!G.selected.length) return;
+    const t=getType(G.selected);
+    if(!t){ toast('不是合法牌型（12345也是顺子哦）'); return; }
+    if(G.lastPlay&&!canBeat(t,G.lastPlay)){ toast('压不过上家'); return; }
+    doPlay(0,G.selected,t);
+}
+
+function passPlay(){
+    if(G.current!==0||G.over||!G.lastPlay) return;
+    doPass(0);
+}
+
+function doPlay(p,cards,t){
+    const ids=new Set(cards.map(c=>c.id));
+    G.hands[p]=G.hands[p].filter(c=>!ids.has(c.id));
+    // 记牌：记录每个玩家出过的牌
+    for(let c of cards) G.playedCards[p].push(c);
+    // 如果是新一轮开始（G.lastPlay为null），先清除上一轮的牌
+    if(G.lastPlay===null){
+        document.getElementById('playCards').innerHTML='';
+        document.getElementById('topCards').innerHTML='';
+        document.getElementById('leftCards').innerHTML='';
+        document.getElementById('rightCards').innerHTML='';
+    }
+    G.lastPlay={player:p,cards,type:t.type,val:t.val,len:t.len};
+    G.lastPlayer=p; G.passCount=0;
+    const names=['你','下家','对家','上家'];
+    document.getElementById('playInfo').textContent=names[p]+'出牌';
+    // 渲染牌，并添加出牌者名称标签（压牌时高亮，更清晰）
+    const isBeat = (G.lastPlay && G.lastPlay.player !== p && G.lastPlay.player !== -1);
+    const isFirstPlay = !G.lastPlay || G.lastPlay.player === -1;
+    const labelColor = isBeat ? '#ff4444' : (isFirstPlay ? '#44ff44' : '#ffd700');
+    const labelBg = isBeat ? 'background:rgba(255,68,68,0.25);border:1px solid #ff4444;border-radius:6px;padding:2px 8px;' : 
+                      (isFirstPlay ? 'background:rgba(68,255,68,0.2);border:1px solid #44ff44;border-radius:6px;padding:2px 8px;' : 
+                      'background:rgba(0,0,0,0.3);border-radius:6px;padding:2px 8px;');
+    const labelText = isFirstPlay ? names[p]+' 出牌' : (isBeat ? names[p]+' ⚡压'+names[G.lastPlay.player] : names[p]+' 跟牌');
+    const labelHtml='<div style="color:'+labelColor+';font-size:13px;font-weight:bold;text-align:center;margin-bottom:4px;text-shadow:0 1px 3px rgba(0,0,0,0.9);'+labelBg+'">'+labelText+'</div>';
+    if(p===0){ document.getElementById('playCards').innerHTML=labelHtml; renderPlayCards(cards,'playCards'); }
+    else if(p===1){ document.getElementById('rightCards').innerHTML=labelHtml; renderPlayCards(cards,'rightCards'); }
+    else if(p===2){ document.getElementById('topCards').innerHTML=labelHtml; renderPlayCards(cards,'topCards'); }
+    else if(p===3){ document.getElementById('leftCards').innerHTML=labelHtml; renderPlayCards(cards,'leftCards'); }
+    G.selected=[];
+    if(G.hands[p].length===0){ checkOver(p); return; }
+    G.current=(p+1)%4;
+    let guard=0;
+    while(G.hands[G.current].length===0&&guard<4){ G.current=(G.current+1)%4; guard++; }
+    updateCounts(); renderHand(); updateBtns();
+    if(G.current!==0&&!G.over) setTimeout(aiPlay,1500);
+}
+
+function doPass(p){
+    G.passCount++;
+    const names=['你','下家','对家','上家'];
+    document.getElementById('playInfo').textContent=names[p]+'不要';
+    const passHtml='<div style="color:#ffd700;font-size:16px;font-weight:bold;text-align:center;line-height:50px;text-shadow:0 1px 3px rgba(0,0,0,0.5);">不要</div>';
+    if(p===0) document.getElementById('playCards').innerHTML=passHtml;
+    else if(p===1) document.getElementById('rightCards').innerHTML=passHtml;
+    else if(p===2) document.getElementById('topCards').innerHTML=passHtml;
+    else if(p===3) document.getElementById('leftCards').innerHTML=passHtml;
+    
+    // 计算还有多少玩家没出完牌
+    const activePlayers = [0,1,2,3].filter(x=>G.hands[x].length>0);
+    
+    if(G.passCount>=activePlayers.length-1){
+        // 一轮结束：除了出牌的人，其他人都不要
+        G.lastPlay=null; G.passCount=0;
+        
+        // 接风规则：如果上一个出牌的人已经出完牌了，由他的队友接风
+        const lastPlayer = G.lastPlayer;
+        if(G.hands[lastPlayer].length===0){
+            // 上一个出牌的人已经出完牌了，由他的队友接风
+            const teamMate = (lastPlayer+2)%4;
+            if(G.hands[teamMate].length>0){
+                G.current=teamMate;
+                document.getElementById('playInfo').textContent=names[teamMate]+'接风出牌';
+                toast(names[teamMate]+'接风！');
+            } else {
+                // 队友也出完牌了，找下一个没出完牌的
+                G.current=(lastPlayer+1)%4;
+                let guard=0;
+                while(G.hands[G.current].length===0&&guard<4){ G.current=(G.current+1)%4; guard++; }
+            }
+        } else {
+            // 上一个出牌的人还没出完牌，由他继续出牌
+            G.current=lastPlayer;
+            document.getElementById('playInfo').textContent=names[lastPlayer]+'继续出牌';
+        }
+    } else {
+        // 正常继续下一个玩家
+        G.current=(p+1)%4;
+        let guard=0;
+        while(G.hands[G.current].length===0&&guard<4){ G.current=(G.current+1)%4; guard++; }
+    }
+    
+    updateCounts(); renderHand(); updateBtns();
+    if(G.current!==0&&!G.over&&G.hands[G.current].length>0) setTimeout(aiPlay,1500);
+}
+
+// ========== 国服玩家水平AI辅助函数 ==========
+// 记牌：统计已经出了哪些牌
+function getPlayedCount(value){
+    let count=0;
+    for(let p=0;p<4;p++){
+        for(let c of G.playedCards[p]){
+            if(c.value===value) count++;
+        }
+    }
+    return count;
+}
+
+// 估算牌力：0-100分，越高牌力越强
+function estimateHandStrength(h){
+    let score=0;
+    const vc={};
+    for(let c of h) if(!isWild(c)) vc[c.value]=(vc[c.value]||0)+1;
+    const wilds=h.filter(c=>isWild(c)).length;
+    
+    // 炸弹加分
+    for(let v in vc){
+        if(vc[v]>=4) score+=20*(vc[v]-3); // 4张20分，5张40分，6张60分
+        if(vc[v]===3 && wilds>=1) score+=15; // 3张+逢人配=炸弹
+    }
+    // 同花顺加分
+    const suits={};
+    for(let c of h) if(c.suit && !isWild(c)){ if(!suits[c.suit])suits[c.suit]=[]; suits[c.suit].push(c); }
+    for(let s in suits){
+        const sc=suits[s].sort((a,b)=>cvRaw(a)-cvRaw(b));
+        for(let st=0;st<=sc.length-5;st++){
+            const slice=sc.slice(st,st+5);
+            if(isStraight(slice)) score+=25; // 同花顺25分
+        }
+    }
+    // 大牌加分
+    for(let c of h){
+        if(cv(c)>=14) score+=5; // A以上
+        if(cv(c)>=16) score+=10; // 王
+    }
+    // 逢人配加分
+    score+=wilds*8;
+    // 顺子加分
+    const nonWild=h.filter(c=>!isWild(c)).sort((a,b)=>cvRaw(a)-cvRaw(b));
+    for(let st=0;st<=nonWild.length-5;st++){
+        const slice=nonWild.slice(st,st+5);
+        if(isStraight(slice)) score+=8;
+    }
+    // 三带二加分
+    for(let v in vc){
+        if(vc[v]>=3){
+            for(let v2 in vc){
+                if(v2!==v&&vc[v2]>=2){ score+=5; break; }
+            }
+        }
+    }
+    return Math.min(100,score);
+}
+
+// 找所有能压的牌型（用于AI决策）
+function findAllBeats(h, lp){
+    const res=[];
+    if(!lp) return res;
+    const sorted=sortByVal(h).reverse();
+    const vc={};
+    for(let c of h) if(!isWild(c)) vc[c.value]=(vc[c.value]||0)+1;
+    const wilds=h.filter(c=>isWild(c));
+    
+    // 单张
+    if(lp.type==='single'){
+        for(let c of sorted){
+            if(cv(c)>lp.val && !isWild(c) && cv(c)<15) res.push({cards:[c],type:'single',val:cv(c),label:'单张'});
+        }
+        if(wilds.length) res.push({cards:[wilds[0]],type:'single',val:15,label:'逢人配'});
+    }
+    // 对子
+    else if(lp.type==='pair'){
+        for(let v in vc){
+            if(vc[v]>=2 && cv({value:v})>lp.val && cv({value:v})<15){
+                res.push({cards:h.filter(c=>c.value===v).slice(0,2),type:'pair',val:cv({value:v}),label:'对子'});
+            }
+        }
+    }
+    // 三张
+    else if(lp.type==='triple'){
+        for(let v in vc){
+            if(vc[v]>=3 && cv({value:v})>lp.val && cv({value:v})<15){
+                res.push({cards:h.filter(c=>c.value===v).slice(0,3),type:'triple',val:cv({value:v}),label:'三张'});
+            }
+        }
+    }
+    // 三带二
+    else if(lp.type==='t2'){
+        for(let v in vc){
+            if(vc[v]>=3 && cv({value:v})>lp.val && cv({value:v})<15){
+                const triple=h.filter(c=>c.value===v).slice(0,3);
+                for(let v2 in vc){
+                    if(v2!==v&&vc[v2]>=2&&cv({value:v2})<15){
+                        const pair=h.filter(c=>c.value===v2).slice(0,2);
+                        res.push({cards:[...triple,...pair],type:'t2',val:cv({value:v}),label:'三带二'});
+                    }
+                }
+            }
+        }
+    }
+    // 顺子
+    else if(lp.type==='straight'||lp.type==='sf'){
+        const nonWild=h.filter(c=>!isWild(c)).sort((a,b)=>cvRaw(a)-cvRaw(b));
+        for(let st=0;st<=nonWild.length-5;st++){
+            const slice=nonWild.slice(st,st+5);
+            if(isStraight(slice)){
+                const t=getType(slice);
+                if(t && t.val>lp.val) res.push({cards:slice,type:t.type,val:t.val,label:t.type==='sf'?'同花顺':'顺子'});
+            }
+        }
+    }
+    // 炸弹（任何牌型都可以用炸弹压）
+    for(let v in vc){
+        if(vc[v]>=4){
+            const bomb=h.filter(c=>c.value===v);
+            res.push({cards:bomb,type:'bomb',val:cv({value:v})*10+bomb.length,label:v+'炸'});
+        }
+        if(vc[v]===3 && wilds.length>=1){
+            const bomb=[...h.filter(c=>c.value===v),wilds[0]];
+            res.push({cards:bomb,type:'bomb',val:cv({value:v})*10+4,label:v+'炸(配)'});
+        }
+    }
+    // 按大小排序
+    res.sort((a,b)=>a.val-b.val);
+    return res;
+}
+
+// 重写AI策略：国服玩家水平、记牌、队友配合、拦牌、合理使用炸弹
+function aiPlay(){
+    if(G.over) return;
+    const p=G.current, hand=G.hands[p], lp=G.lastPlay;
+    const isTeamMate=(player)=>{ return (p===0&&player===2)||(p===2&&player===0)||(p===1&&player===3)||(p===3&&player===1); };
+    const teamMate=(p+2)%4;
+    const opp1=(p+1)%4, opp2=(p+3)%4;
+    const oppMinCount=Math.min(G.hands[opp1].length,G.hands[opp2].length);
+    const teamCount=G.hands[teamMate].length;
+    const handStrength=estimateHandStrength(hand);
+    const names=['你','下家','对家','上家'];
+    
+    // 辅助：找炸弹
+    function findBomb(h){
+        const vc={};
+        for(let c of h) if(!isWild(c)) vc[c.value]=(vc[c.value]||0)+1;
+        const wilds=h.filter(c=>isWild(c));
+        const bombs=[];
+        for(let v in vc){
+            if(vc[v]>=4) bombs.push({cards:h.filter(c=>c.value===v), val:cv({value:v})*10+vc[v]});
+            if(vc[v]===3 && wilds.length>=1) bombs.push({cards:[...h.filter(c=>c.value===v),wilds[0]], val:cv({value:v})*10+4});
+        }
+        // 同花顺
+        const suits={};
+        for(let c of h) if(c.suit && !isWild(c)){ if(!suits[c.suit])suits[c.suit]=[]; suits[c.suit].push(c); }
+        for(let s in suits){
+            const sc=suits[s].sort((a,b)=>cvRaw(a)-cvRaw(b));
+            for(let st=0;st<=sc.length-5;st++){
+                const slice=sc.slice(st,st+5);
+                if(isStraight(slice)) bombs.push({cards:slice, val:cv(slice[slice.length-1])*10+5});
+            }
+        }
+        bombs.sort((a,b)=>a.val-b.val);
+        return bombs.length?bombs[0].cards:null;
+    }
+    
+    // 辅助：首家出牌（国服玩家水平）
+    // 辅助：首家出牌（国服玩家水平）
+    // 辅助：首家出牌（国服玩家水平v2）
+    // 辅助：首家出牌（国服玩家水平v3）
+    function findFirstPlay(h){
+        const vc={};
+        for(let c of h) if(!isWild(c)) vc[c.value]=(vc[c.value]||0)+1;
+        const wilds=h.filter(c=>isWild(c));
+        const handLen = h.length;
+        
+        // 【残局策略】根据剩余牌数决定出牌
+        if(handLen<=4){
+            // 剩4张：优先出单张
+            const single = h.filter(c=>!isWild(c)&&cv(c)<=10).sort((a,b)=>cv(a)-cv(b));
+            if(single.length) return [single[0]];
+            const bomb=findBomb(h);
+            if(bomb) return bomb;
+            return [h[0]];
+        }
+        if(handLen===5){
+            // 剩5张：优先出对子
+            for(let v in vc){
+                if(vc[v]>=2 && cv({value:v})<=10){
+                    return h.filter(c=>c.value===v).slice(0,2);
+                }
+            }
+            // 没有小对子，出三带二
+            for(let v in vc){
+                if(vc[v]>=3){
+                    const triple=h.filter(c=>c.value===v).slice(0,3);
+                    for(let v2 in vc){
+                        if(v2!==v&&vc[v2]>=2){
+                            return [...triple,...h.filter(c=>c.value===v2).slice(0,2)];
+                        }
+                    }
+                }
+            }
+            const bomb=findBomb(h);
+            if(bomb) return bomb;
+        }
+        
+        // 【国服技巧】先组好其他牌型，再出废单牌
+        // 1. 先找顺子（组好顺子）
+        const nonWild=h.filter(c=>!isWild(c)).sort((a,b)=>cvRaw(a)-cvRaw(b));
+        let straightUsed = new Set();
+        for(let st=0;st<=nonWild.length-5;st++){
+            const slice=nonWild.slice(st,st+5);
+            if(isStraight(slice)){
+                slice.forEach(c=>straightUsed.add(c.id));
+                break; // 只找一个顺子
+            }
+        }
+        
+        // 2. 找对子（组好对子）
+        let pairUsed = new Set();
+        for(let v in vc){
+            if(vc[v]>=2){
+                h.filter(c=>c.value===v).slice(0,2).forEach(c=>pairUsed.add(c.id));
+                break; // 只找一个对子
+            }
+        }
+        
+        // 3. 找三带二
+        let t2Used = new Set();
+        for(let v in vc){
+            if(vc[v]>=3){
+                const triple=h.filter(c=>c.value===v).slice(0,3);
+                for(let v2 in vc){
+                    if(v2!==v&&vc[v2]>=2){
+                        const pair=h.filter(c=>c.value===v2).slice(0,2);
+                        [...triple,...pair].forEach(c=>t2Used.add(c.id));
+                        break;
+                    }
+                }
+                if(t2Used.size>0) break;
+            }
+        }
+        
+        // 4. 剩下的牌就是废单牌（除了顺子、对子、三带二之外的牌）
+        const usedIds = new Set([...straightUsed, ...pairUsed, ...t2Used]);
+        const remaining = h.filter(c=>!usedIds.has(c.id) && !isWild(c));
+        
+        // 5. 【v10改进】出牌多样化：根据手牌情况选择出牌类型
+        const rand = Math.random();
+        
+        // 【有鬼打一张，无鬼打一夯】
+        const hasWang = h.some(c=>cv(c)>=16); // 有王
+        
+        // 【v15改进】国服玩家标准：三带二 > 顺子 > 对子 > 单牌
+        // 1. 优先出三带二（有就出）
+        for(let v in vc){
+            if(vc[v]>=3 && cv({value:v})<=12){
+                const triple=h.filter(c=>c.value===v).slice(0,3);
+                for(let v2 in vc){
+                    if(v2!==v&&vc[v2]>=2&&cv({value:v2})<=12){
+                        return [...triple,...h.filter(c=>c.value===v2).slice(0,2)];
+                    }
+                }
+            }
+        }
+        
+        // 2. 其次出顺子（有就出）
+        if(straightUsed.size>0){
+            for(let st=0;st<=nonWild.length-5;st++){
+                const slice=nonWild.slice(st,st+5);
+                if(isStraight(slice)) return slice;
+            }
+        }
+        
+        // 3. 然后出对子（有就出）
+        for(let v in vc){
+            if(vc[v]>=2 && cv({value:v})<=10){
+                return h.filter(c=>c.value===v).slice(0,2);
+            }
+        }
+        
+        // 【v16改进】最后才出单牌，必须从小到大出废单牌
+        if(remaining.length){
+            // 先去掉逢人配（不单独出）
+            const nonWildRemaining = remaining.filter(c=>!isWild(c));
+            if(nonWildRemaining.length){
+                // 从小到大排序，先出最小的
+                const sorted = nonWildRemaining.sort((a,b)=>cv(a)-cv(b));
+                return [sorted[0]];
+            }
+            // 实在没有其他牌了，再出逢人配
+            if(remaining.length){
+                return [remaining[0]];
+            }
+        }
+        
+        // 兜底：出对子
+        for(let v in vc){
+            if(vc[v]>=2 && cv({value:v})<=10){
+                return h.filter(c=>c.value===v).slice(0,2);
+            }
+        }
+        
+        // 兜底：出最小的单张
+        const sorted = [...h].sort((a,b)=>cv(a)-cv(b));
+        const smallest = sorted.find(c=>!isWild(c)&&cv(c)<15);
+        if(smallest) return [smallest];
+        return [h[0]];
+    }
+    
+    if(!lp||lp.player===p){
+        // 首家出牌
+        const play=findFirstPlay(hand);
+        if(play){
+            const t=getType(play);
+            if(t){ doPlay(p,play,t); return; }
+        }
+        // 绝对兜底：出第一张牌
+        if(hand.length){
+            const t=getType([hand[0]]);
+            doPlay(p,[hand[0]],t);
+            return;
+        }
+    } else {
+        // 压牌策略（国服玩家水平）
+        
+        // 队友出牌：智能配合策略（国服玩家水平v9）
+        if(isTeamMate(lp.player)){
+            // 【核心规则1】队友出大牌（>=14，即A、K以上），直接不要，让队友继续走
+            if(lp.val>=14){
+                doPass(p); return;
+            }
+            
+            // 【核心规则2】队友出王/级牌/炸弹，绝对不要
+            if(lp.val>=15 || lp.type==='bomb' || lp.type==='sf' || lp.type==='rocket'){
+                doPass(p); return;
+            }
+            
+            // 【核心规则3】队友剩牌很少（≤2张），且队友出的是小牌，帮忙接一下让队友走完
+            if(teamCount<=2 && lp.val<=10){
+                const beats=findAllBeats(hand,lp);
+                const normalBeats=beats.filter(b=>b.type!=='bomb'&&b.val<15);
+                if(normalBeats.length){
+                    const t=getType(normalBeats[0].cards);
+                    if(t){ doPlay(p,normalBeats[0].cards,t); return; }
+                }
+            }
+            
+            // 【核心规则4】对手剩牌极少（≤3张），且队友出的是小牌，必须帮忙拦
+            if(oppMinCount<=3 && lp.val<=10 && handStrength>=40){
+                const beats=findAllBeats(hand,lp);
+                const normalBeats=beats.filter(b=>b.type!=='bomb'&&b.val<15);
+                if(normalBeats.length){
+                    const t=getType(normalBeats[0].cards);
+                    if(t){ doPlay(p,normalBeats[0].cards,t); return; }
+                }
+            }
+            
+            // 【默认】不压队友
+            doPass(p); return;
+        }
+        
+        // 对手出牌：国服玩家水平的智能压牌策略
+        const beats=findAllBeats(hand,lp);
+        
+        // 没有能压的牌，直接不要
+        if(!beats.length){
+            doPass(p); return;
+        }
+        
+        // 【v16改进】对手出单牌，必须合理拦牌，不让对手单牌做大
+        if(lp.type==='single'){
+            // 找所有能压的单张（不包括炸弹，不包括逢人配单独出浪费）
+            const singleBeats=beats.filter(b=>{
+                if(b.type==='bomb') return false;
+                if(b.type==='rocket') return false;
+                if(b.cards.length!==1) return false;
+                // 逢人配不单独压单牌（浪费）
+                if(isWild(b.cards[0])) return false;
+                return true;
+            });
+            if(singleBeats.length){
+                // 按从小到大排序，找最小的能压的
+                singleBeats.sort((a,b)=>a.val-b.val);
+                const minBeat = singleBeats.find(b=>b.val>lp.val);
+                if(minBeat){
+                    const t=getType(minBeat.cards);
+                    if(t){ doPlay(p,minBeat.cards,t); return; }
+                }
+            }
+        }
+        
+        // 【v12改进】对手出对子/三带二/顺子，更激进，必须压
+        let playThreshold=0.9; // 基础概率提高到0.9（必须压）
+        
+        // 上家出什么都必须压（不能让上家舒服）
+        if(lp.player===3) playThreshold=0.95;
+        // 下家出什么都必须压（不让下家跑）
+        else if(lp.player===1) playThreshold=0.9;
+        // 对家（队友）出小牌不压，出大牌不压
+        else if(lp.val<=12) playThreshold=0.1; // 队友出小牌不压
+        else if(lp.val<=14) playThreshold=0.3;
+        else playThreshold=0.1; // 队友出大牌不压
+        
+        // 对手出顺子/长牌，必须拦（防止对手连续跑牌）
+        if(lp.len>=5) playThreshold+=0.2;
+        
+        // 自己牌力强，更要压
+        if(handStrength>=60) playThreshold+=0.15;
+        else if(handStrength>=40) playThreshold+=0.05;
+        
+        // 对手剩牌少，必须拦
+        if(oppMinCount<=10) playThreshold+=0.1;
+        if(oppMinCount<=8) playThreshold+=0.15;
+        if(oppMinCount<=5) playThreshold+=0.15;
+        if(oppMinCount<=3) playThreshold+=0.2;
+        
+        // 自己剩牌少，更要冲
+        if(hand.length<=8) playThreshold+=0.1;
+        if(hand.length<=5) playThreshold+=0.15;
+        
+        // 队友剩牌少，帮忙拦
+        if(teamCount<=5) playThreshold+=0.1;
+        
+        // 决定是否压
+        if(Math.random()<playThreshold){
+            // 找最小的能压的牌（不浪费大牌）
+            const normalBeats=beats.filter(b=>b.type!=='bomb');
+            if(normalBeats.length){
+                const t=getType(normalBeats[0].cards);
+                if(t){ doPlay(p,normalBeats[0].cards,t); return; }
+            }
+        }
+        
+        // 【国服技巧3】炸弹使用策略：炸五不炸四，打七不打八
+        const bombs=beats.filter(b=>b.type==='bomb');
+        if(bombs.length){
+            // 按炸弹大小排序（小炸在前，大炸在后）
+            bombs.sort((a,b)=>{
+                // 先按张数排
+                if(a.len!==b.len) return a.len-b.len;
+                // 再按点数排
+                return a.val-b.val;
+            });
+            
+            let bombThreshold=0.02; // 基础概率极低，不随便炸
+            
+            // 对手出小牌（<=14），绝对不用炸弹！
+            if(lp.val<=14) bombThreshold=0.001; // 小牌绝对不炸
+            
+            // 只有对手出大牌（>=15，即王/级牌/炸弹），才考虑炸
+            if(lp.val>=16) bombThreshold=0.2; // 王才考虑炸
+            if(lp.type==='bomb' || lp.type==='sf') bombThreshold=0.5; // 对手出炸弹才炸回去
+            
+            // 对手剩牌少，必须拦（炸五不炸四：剩5张时必须炸）
+            if(oppMinCount<=6) bombThreshold=0.5;
+            if(oppMinCount<=5) bombThreshold=0.8;  // 剩5张必须炸
+            if(oppMinCount<=3) bombThreshold=0.95;
+            
+            // 自己剩牌少，必须冲
+            if(hand.length<=6) bombThreshold=0.6;
+            if(hand.length<=4) bombThreshold=0.85;
+            
+            // 自己牌力强，更敢炸
+            if(handStrength>=60) bombThreshold+=0.1;
+            
+            // 队友剩牌少，帮忙拦
+            if(teamCount<=4) bombThreshold+=0.15;
+            
+            // 小炸先用，大炸留着
+            // 如果是小炸弹（4-5张），更倾向于用
+            const smallBombs = bombs.filter(b=>b.len<=5);
+            if(smallBombs.length) bombThreshold+=0.1;
+            
+            bombThreshold=Math.min(0.95,Math.max(0.05,bombThreshold));
+            
+            if(Math.random()<bombThreshold){
+                // 用最小的炸弹，不浪费大牌炸弹
+                const t=getType(bombs[0].cards);
+                if(t){ doPlay(p,bombs[0].cards,t); return; }
+            }
+        }
+    }
+    // 兜底：如果前面所有分支都没返回，默认不要
+    doPass(p);
+}
+
+function checkOver(p){
+    G.finishOrder.push(p);
+    const names=['你','下家','对家','上家'];
+    toast(names[p]+'出完牌了！');
+    
+    // 检查是否有一方两人都出完了（掼蛋规则：一方两人都出完就结束）
+    const team0Finished = G.finishOrder.filter(x=>x%2===0).length; // 我方(0,2)出完人数
+    const team1Finished = G.finishOrder.filter(x=>x%2===1).length; // 对方(1,3)出完人数
+    
+    if(team0Finished>=2 || team1Finished>=2 || G.finishOrder.length>=4){
+        // 一方两人都出完了，或者所有人都出完了，这局结束
+        // 补充剩下的人的名次（按剩余牌数从少到多排）
+        const remaining = [0,1,2,3].filter(x=>!G.finishOrder.includes(x));
+        remaining.sort((a,b)=>G.hands[a].length - G.hands[b].length);
+        for(let r of remaining) G.finishOrder.push(r);
+    } else {
+        // 还有人没出完，继续游戏
+        // 接风规则：如果当前玩家出完牌，且另外两个对手都不要，由队友接风
+        G.current=(p+1)%4;
+        let guard=0;
+        while(G.hands[G.current].length===0&&guard<4){ G.current=(G.current+1)%4; guard++; }
+        if(G.current!==0&&G.hands[G.current].length>0) setTimeout(aiPlay,1500);
+        updateCounts(); renderHand(); updateBtns();
+        return;
+    }
+    // 所有人都出完了，计算升级
+    // finishOrder[0]=1游, finishOrder[1]=2游, finishOrder[2]=3游, finishOrder[3]=4游
+    const first=G.finishOrder[0];
+    const firstTeam=first%2===0?0:1; // 0=我方(0,2), 1=对方(1,3)
+    
+    // 进贡还贡：双下的一方下一局要进贡
+    // 判断是否双下（1游和2游是同一方）
+    const isDoubleDown = (G.finishOrder[0]%2 === G.finishOrder[1]%2);
+    if(isDoubleDown){
+        // 1游和2游的一方是赢方，另一方是输方
+        const winTeam = firstTeam;
+        const loseTeam = 1 - winTeam;
+        // 输方的4游进贡给赢方的1游
+        const tributeFrom = G.finishOrder[3]; // 4游
+        const tributeTo = G.finishOrder[0]; // 1游
+        G.tributeState = 'need_tribute';
+        G.tributeFrom = tributeFrom;
+        G.tributeTo = tributeTo;
+        console.log('双下！' + names[tributeFrom] + ' 下一局进贡给 ' + names[tributeTo]);
+    }
+    
+    let up=0;
+    let winTeam=firstTeam;
+    
+    // 判断升级级数
+    if(firstTeam===0){
+        // 我方1游
+        if(G.finishOrder[1]%2===0){
+            // 我方2游 = 双下，升3级
+            up=3;
+        } else if(G.finishOrder[2]%2===0){
+            // 我方3游 = 升2级
+            up=2;
+        } else {
+            // 我方4游 = 升1级
+            up=1;
+        }
+    } else {
+        // 对方1游
+        if(G.finishOrder[1]%2===1){
+            // 对方2游 = 双下，对方升3级 = 我方降3级
+            up=-3;
+        } else if(G.finishOrder[2]%2===1){
+            // 对方3游 = 对方升2级 = 我方降2级
+            up=-2;
+        } else {
+            // 对方4游 = 对方升1级 = 我方降1级
+            up=-1;
+        }
+    }
+    
+    // 打A特殊规则：必须1游+3游（双带）才算过
+    let aPass=false;
+    if(G.level===1){
+        if(firstTeam===0 && G.finishOrder[2]%2===0){
+            aPass=true; // 我方1游+3游，过A
+        } else if(firstTeam===1 && G.finishOrder[2]%2===1){
+            // 对方过A，我方重新打2
+            aPass=false;
+        } else {
+            up=0; // 打A没双带，不升级
+        }
+    }
+    
+    // 直接升级：赢一局升对应级数（掼蛋规则，不需要积累分数）
+    if(up>0){
+        // 我方赢了，升up级
+        G.level = Math.min(13, G.level + up);  // 最高到A（13）
+    } else if(up<0){
+        // 对方赢了，我方降|up|级
+        G.level = Math.max(2, G.level + up);  // 最低到打2
+    }
+    // 打A未过时，up已经设为0了，不需要额外处理
+    
+    // 显示结果提示（不弹框，直接进入下一局）
+    const resultText = firstTeam===0 ? '🎉 我方获胜！' : '😢 对方获胜';
+    const upText = up>0 ? '升级 '+up+' 级' : (up<0 ? '降级 '+Math.abs(up)+' 级' : '打A未过，不升级');
+    toast(resultText+' '+upText+' | 我方:'+G.scores[0]+' 对方:'+G.scores[1]);
+    
+    // 只有过A才显示游戏结束弹框
+    if(aPass){
+        document.getElementById('gameOverDesc').textContent=names[first]+'第一个出完牌（1游）';
+        document.getElementById('gameOverResult').textContent='🎊 恭喜过A！游戏结束！';
+        document.getElementById('gameOverResult').className='result win';
+        document.getElementById('gameOverLevel').textContent='我方最终获胜！';
+        G.over=true;
+        document.getElementById('gameOverModal').classList.add('show');
+        return;
+    }
+    
+    // 直接进入下一局（不弹框）
+    setTimeout(()=>{
+        restartGame();
+    }, 2000);
+}
+
+function restartGame(){
+    G.round++;
+    G.tributeState=null; G.tributeFrom=-1; G.tributeTo=-1;
+    setTimeout(initGame, 500);
+}
+function doTribute(){
+    const names=['你','下家','对家','上家'];
+    const from = G.tributeFrom;
+    const to = G.tributeTo;
+    
+    console.log('进贡还贡：' + names[from] + ' 进贡给 ' + names[to]);
+    
+    // 如果进贡方是玩家，让玩家选择进贡哪张牌
+    if(from === 0){
+        showTributeModal('tribute', from, to);
+        return;
+    }
+    
+    // AI进贡：按照掼蛋规则，必须进贡最大的牌（逢人配除外）
+    // 掼蛋规则：进贡必须进贡手中最大的牌，不管是不是炸弹中的牌
+    const hand = G.hands[from];
+    const nonWild = hand.filter(c=>!isWild(c));
+    
+    // 找最大的牌（逢人配除外），直接进贡，不管是不是炸弹中的牌
+    let tributeCard = null;
+    if(nonWild.length){
+        const sortedNonWild = [...nonWild].sort((a,b)=>cv(b)-cv(a));
+        tributeCard = sortedNonWild[0]; // 直接进贡最大的牌
+    }
+    
+    if(tributeCard){
+        // 从进贡方手牌中移除
+        G.hands[from] = G.hands[from].filter(c=>c.id!==tributeCard.id);
+        // 添加到收贡方手牌
+        G.hands[to].push(tributeCard);
+        console.log(names[from] + ' 进贡 ' + tributeCard.value + tributeCard.suit + ' 给 ' + names[to]);
+        toast(names[from] + ' 进贡 ' + tributeCard.value + tributeCard.suit);
+        
+        // 还贡处理
+        setTimeout(()=>{
+            doReturn(from, to);
+        }, 800);
+    } else {
+        // 没有可进贡的牌，直接开始游戏
+        finishTribute();
+    }
+}
+
+// 还贡处理
+function doReturn(from, to){
+    const names=['你','下家','对家','上家'];
+    
+    // 如果收贡方是玩家，让玩家选择还贡哪张牌
+    if(to === 0){
+        showTributeModal('return', from, to);
+        return;
+    }
+    
+    // AI还贡：按照掼蛋技巧选择还贡的牌
+    // 技巧：还贡≤10的小牌，优先还贡单张小牌，不要还贡顺子中的牌
+    const hand = G.hands[to];
+    const smallCards = hand.filter(c=>cv(c)<=10 && !isWild(c));
+    
+    // 统计牌型
+    const vc={};
+    for(let c of smallCards) vc[c.value]=(vc[c.value]||0)+1;
+    
+    // 找最小的单张牌（不是对子、顺子中的牌）
+    let returnCard = null;
+    const sortedSmall = [...smallCards].sort((a,b)=>cv(a)-cv(b));
+    
+    for(let c of sortedSmall){
+        // 优先还贡单张小牌
+        if(vc[c.value] === 1){
+            returnCard = c;
+            break;
+        }
+    }
+    
+    // 如果没有单张小牌，还贡最小的对子中的一张
+    if(!returnCard){
+        for(let c of sortedSmall){
+            if(vc[c.value] >= 2){
+                returnCard = c;
+                break;
+            }
+        }
+    }
+    
+    // 兜底：还贡最小的牌
+    if(!returnCard && sortedSmall.length){
+        returnCard = sortedSmall[0];
+    }
+    
+    if(returnCard){
+        G.hands[to] = G.hands[to].filter(c=>c.id!==returnCard.id);
+        G.hands[from].push(returnCard);
+        console.log(names[to] + ' 还贡 ' + returnCard.value + returnCard.suit + ' 给 ' + names[from]);
+        toast(names[to] + ' 还贡 ' + returnCard.value + returnCard.suit);
+    }
+    
+    finishTribute();
+}
+
+// 完成进贡还贡，开始游戏
+function finishTribute(){
+    // 重置进贡状态
+    G.tributeState = null;
+    G.tributeFrom = -1;
+    G.tributeTo = -1;
+    
+    // 重新排序手牌
+    for(let i=0;i<4;i++){
+        G.hands[i] = sortByVal(G.hands[i]);
+    }
+    
+    // 开始游戏
+    setTimeout(initGame, 500);
+}
+
+// 显示进贡/还贡选择弹窗
+function showTributeModal(type, from, to){
+    const names=['你','下家','对家','上家'];
+    const modal = document.getElementById('tributeModal');
+    const title = document.getElementById('tributeTitle');
+    const cardsContainer = document.getElementById('tributeCards');
+    const confirmBtn = document.getElementById('tributeConfirm');
+    
+    // 选择玩家的手牌
+    const playerHand = type === 'tribute' ? G.hands[0] : G.hands[0];
+    
+    // 过滤可选牌
+    let selectableCards = [];
+    if(type === 'tribute'){
+        // 进贡：可选所有非逢人配的牌
+        selectableCards = playerHand.filter(c=>!isWild(c));
+        title.textContent = '请选择进贡给 ' + names[to] + ' 的牌';
+    } else {
+        // 还贡：可选≤10的非逢人配的牌
+        selectableCards = playerHand.filter(c=>cv(c)<=10 && !isWild(c));
+        title.textContent = '请选择还贡给 ' + names[from] + ' 的牌（≤10）';
+    }
+    
+    // 渲染可选牌
+    cardsContainer.innerHTML = '';
+    G.tributeSelected = null;
+    
+    for(let c of selectableCards){
+        const cardEl = document.createElement('div');
+        cardEl.className = 'tribute-card' + (SUIT_COLOR[c.suit] ? ' ' + SUIT_COLOR[c.suit] : '');
+        cardEl.innerHTML = '<div class="val">' + cdv(c) + '</div><div class="suit">' + (c.suit||'') + '</div>';
+        cardEl.onclick = () => {
+            // 清除之前的选择
+            document.querySelectorAll('.tribute-card').forEach(el=>el.classList.remove('selected'));
+            cardEl.classList.add('selected');
+            G.tributeSelected = c;
+        };
+        cardsContainer.appendChild(cardEl);
+    }
+    
+    // 确认按钮
+    confirmBtn.onclick = () => {
+        if(!G.tributeSelected){
+            toast('请选择一张牌');
+            return;
+        }
+        
+        if(type === 'tribute'){
+            // 玩家进贡
+            const tributeCard = G.tributeSelected;
+            G.hands[0] = G.hands[0].filter(c=>c.id!==tributeCard.id);
+            G.hands[to].push(tributeCard);
+            console.log('你进贡 ' + tributeCard.value + tributeCard.suit + ' 给 ' + names[to]);
+            toast('你进贡 ' + tributeCard.value + tributeCard.suit);
+            
+            modal.classList.remove('show');
+            
+            // 还贡处理
+            setTimeout(()=>{
+                doReturn(from, to);
+            }, 800);
+        } else {
+            // 玩家还贡
+            const returnCard = G.tributeSelected;
+            G.hands[0] = G.hands[0].filter(c=>c.id!==returnCard.id);
+            G.hands[from].push(returnCard);
+            console.log('你还贡 ' + returnCard.value + returnCard.suit + ' 给 ' + names[from]);
+            toast('你还贡 ' + returnCard.value + returnCard.suit);
+            
+            modal.classList.remove('show');
+            finishTribute();
+        }
+    };
+    
+    modal.classList.add('show');
+}
+
+function toggleManual(){
+    if(!G.manualMode){
+        G.originalOrder=[...G.hands[0]];
+        G.manualMode=true;
+        G.manualSel=-1;
+        const groups=smartSortCards(G.hands[0]);
+        const no=[];
+        for(let g of groups) for(let c of g.cards) no.push(c);
+        G.hands[0]=no;
+        document.getElementById('manualBtn').classList.add('active');
+        document.getElementById('restoreBtn').style.display='inline-block';
+        document.getElementById('cancelSelBtn').style.display='inline-block';
+        document.getElementById('groupBtn').style.display='inline-block';
+        document.getElementById('sortTip').classList.add('show');
+    } else {
+        G.manualMode=false;
+        G.manualSel=-1;
+        document.getElementById('manualBtn').classList.remove('active');
+        document.getElementById('restoreBtn').style.display='none';
+        document.getElementById('groupBtn').style.display='inline-block';
+        document.getElementById('cancelSelBtn').style.display='none';
+        document.getElementById('sortTip').classList.remove('show');
+    }
+    renderHand();
+}
+
+function restoreSort(){
+    if(G.originalOrder){
+        G.hands[0]=[...G.originalOrder];
+        G.manualMode=false;
+        G.manualSel=-1;
+        G.selected=[];
+        document.getElementById('manualBtn').classList.remove('active');
+        document.getElementById('restoreBtn').style.display='none';
+        document.getElementById('cancelSelBtn').style.display='none';
+        document.getElementById('groupBtn').style.display='inline-block';
+        document.getElementById('sortTip').classList.remove('show');
+        renderHand();
+        toast('已恢复理牌');
+    }
+}
+
+function cancelSelection(){
+    // 只取消当前选中的牌，不恢复理牌
+    G.selected=[];
+    renderHand();
+    updateBtns();
+    toast("已取消当前选择");
+}
+
+function smartSort(){
+    G.manualMode=false; G.manualSel=-1; G.originalOrder=null; G.selected=[];
+    document.getElementById('manualBtn').classList.remove('active');
+    document.getElementById('restoreBtn').style.display='none';
+    document.getElementById('cancelSelBtn').style.display='none';
+    document.getElementById('groupBtn').style.display='inline-block';
+    document.getElementById('sortTip').classList.remove('show');
+    renderHand();
+    toast('✨ 已智能理牌（支持12345顺子）');
+}
+
+function groupSelected(){
+    if(G.selected.length<2){ toast('请先选择至少2张牌'); return; }
+    const t=getType(G.selected);
+    if(!t){ toast('选中的牌不是合法牌型（12345也是顺子哦）'); return; }
+    if(!G.manualMode){
+        G.originalOrder=[...G.hands[0]];
+        G.manualMode=true;
+        G.manualSel=-1;
+        const groups=smartSortCards(G.hands[0]);
+        const no=[];
+        for(let g of groups) for(let c of g.cards) no.push(c);
+        G.hands[0]=no;
+        document.getElementById('manualBtn').classList.add('active');
+        document.getElementById('restoreBtn').style.display='inline-block';
+        document.getElementById('cancelSelBtn').style.display='inline-block';
+        document.getElementById('sortTip').classList.add('show');
+    }
+    const ids=new Set(G.selected.map(c=>c.id));
+    const rest=G.hands[0].filter(c=>!ids.has(c.id));
+    const selected=[...G.selected];
+    G.hands[0]=[...selected, ...rest];
+    G.selected=[];
+    renderHand();
+    toast('已组牌：'+t.type+'（已切换到手动理牌模式，支持拖拽）');
+}
+
+// 提示功能
+function showHint(){
+    if(G.over || G.current!==0){ toast('现在不是你的回合'); return; }
+    
+    const hand = G.hands[0];
+    const lp = G.lastPlay;
+    const names=['你','下家','对家','上家'];
+    
+    let hints = [];
+    
+    if(!lp || lp.player===0){
+        // 首家出牌：推荐出牌
+        // 1. 优先三带二
+        const vc={};
+        for(let c of hand) if(!isWild(c)) vc[c.value]=(vc[c.value]||0)+1;
+        for(let v in vc){
+            if(vc[v]>=3){
+                const triple=hand.filter(c=>c.value===v).slice(0,3);
+                for(let v2 in vc){
+                    if(v2!==v&&vc[v2]>=2){
+                        const pair=hand.filter(c=>c.value===v2).slice(0,2);
+                        hints.push({cards:[...triple,...pair], type:'三带二', val:cv({value:v})});
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        
+        // 2. 顺子
+        const nonWild=hand.filter(c=>!isWild(c)).sort((a,b)=>cvRaw(a)-cvRaw(b));
+        for(let st=0;st<=nonWild.length-5;st++){
+            const slice=nonWild.slice(st,st+5);
+            if(isStraight(slice)){
+                hints.push({cards:slice, type:'顺子', val:cv(slice[4])});
+                break;
+            }
+        }
+        
+        // 3. 对子
+        for(let v in vc){
+            if(vc[v]>=2){
+                const pair=hand.filter(c=>c.value===v).slice(0,2);
+                hints.push({cards:pair, type:'对子', val:cv({value:v})});
+                break;
+            }
+        }
+        
+        // 4. 单牌（小牌）
+        const singles=hand.filter(c=>!isWild(c)&&cv(c)<=10).sort((a,b)=>cv(a)-cv(b));
+        if(singles.length){
+            hints.push({cards:[singles[0]], type:'单牌', val:cv(singles[0])});
+        }
+        
+    } else {
+        // 跟牌：推荐能压的牌
+        const beats = findAllBeats(hand, lp);
+        const normalBeats = beats.filter(b=>b.type!=='bomb' && b.type!=='rocket');
+        
+        // 找最小的能压的牌
+        if(normalBeats.length){
+            // 按大小排序
+            normalBeats.sort((a,b)=>a.val-b.val);
+            // 推荐前3个
+            for(let i=0;i<Math.min(3,normalBeats.length);i++){
+                const b = normalBeats[i];
+                hints.push({cards:b.cards, type:b.type, val:b.val});
+            }
+        }
+        
+        // 推荐炸弹
+        const bombs = beats.filter(b=>b.type==='bomb'||b.type==='rocket');
+        if(bombs.length && lp.val>=15){ // 对手出大牌才推荐炸弹
+            for(let i=0;i<Math.min(2,bombs.length);i++){
+                const b = bombs[i];
+                hints.push({cards:b.cards, type:'炸弹', val:b.val});
+            }
+        }
+    }
+    
+    // 显示提示
+    const modal = document.getElementById('hintModal');
+    const optionsEl = document.getElementById('hintOptions');
+    optionsEl.innerHTML = '';
+    
+    if(hints.length===0){
+        optionsEl.innerHTML = '<p style="color:#ff9800;padding:20px;text-align:center">没有合适的牌，建议不要</p>';
+    } else {
+        for(let i=0;i<hints.length;i++){
+            const h = hints[i];
+            const div = document.createElement('div');
+            div.className = 'hint-option';
+            div.innerHTML = '<div class="hint-type">'+h.type+'</div><div class="hint-cards">'+h.cards.map(c=>cdv(c)+(c.suit||'')).join(' ')+'</div>';
+            div.onclick = ()=>{
+                // 选中这组牌
+                G.selected = [...h.cards];
+                renderHand();
+                closeHint();
+                updateBtns();
+            };
+            optionsEl.appendChild(div);
+        }
+    }
+    
+    modal.classList.add('show');
+}
+
+function closeHint(){
+    document.getElementById('hintModal').classList.remove('show');
+}
+
+window.onload=initGame;
+</script>
+</body>
+</html>
+
+
+
+
+
+
