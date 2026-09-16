@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>掼蛋游戏</title>
+    <title>掼蛋游戏 v17</title>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: "Microsoft YaHei", sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
         .container {
             background: white;
@@ -21,32 +22,32 @@
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             text-align: center;
-            max-width: 500px;
-            width: 90%;
+            max-width: 600px;
+            width: 100%;
         }
         h1 {
             color: #333;
-            margin-bottom: 30px;
-            font-size: 32px;
+            margin-bottom: 20px;
+            font-size: 28px;
         }
         .btn {
             display: block;
             width: 100%;
-            padding: 15px;
-            margin: 15px 0;
+            padding: 12px;
+            margin: 10px 0;
             border: none;
-            border-radius: 10px;
-            font-size: 18px;
+            border-radius: 8px;
+            font-size: 16px;
             cursor: pointer;
             transition: all 0.3s;
         }
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
             color: white;
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 16px rgba(46, 125, 50, 0.3);
         }
         .btn-secondary {
             background: #f0f0f0;
@@ -56,7 +57,7 @@
             background: #e0e0e0;
         }
         .input-group {
-            margin: 15px 0;
+            margin: 12px 0;
             text-align: left;
         }
         .input-group label {
@@ -83,23 +84,91 @@
             color: #333;
         }
         .hidden { display: none; }
-        .player-list {
+
+        /* 座位布局 */
+        .seats-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 15px;
+        }
+        .seat {
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .seat:hover {
+            border-color: #4caf50;
+        }
+        .seat.occupied {
+            background: #c8e6c9;
+            border-color: #4caf50;
+            cursor: default;
+        }
+        .seat.ready {
+            background: #a5d6a7;
+            border-color: #2e7d32;
+        }
+        .seat.empty {
+            background: #f5f5f5;
+            border-style: dashed;
+        }
+        .seat-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            margin: 5px 0;
+        }
+        .seat-status {
+            font-size: 12px;
+            color: #666;
+        }
+        .seat-ready-badge {
+            background: #2e7d32;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .controls {
             margin: 15px 0;
         }
-        .player-item {
+        .inline-btns {
             display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            background: #f8f9fa;
-            margin: 5px 0;
+            gap: 10px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .inline-btns .btn {
+            width: auto;
+            flex: 1;
+            margin: 0;
+        }
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
             border-radius: 5px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎴 掼蛋游戏</h1>
-        
+        <h1>🎴 掼蛋游戏 v17</h1>
+
         <!-- 主菜单 -->
         <div id="mainMenu">
             <button class="btn btn-primary" onclick="startSinglePlayer()">单人模式（和电脑玩）</button>
@@ -113,7 +182,7 @@
                 <input type="text" id="playerName" placeholder="输入你的昵称">
             </div>
             <button class="btn btn-primary" onclick="createRoom()">创建房间</button>
-            <div style="margin: 20px 0; color: #999;">— 或 —</div>
+            <div style="margin: 15px 0; color: #999;">— 或 —</div>
             <div class="input-group">
                 <label>房间号</label>
                 <input type="text" id="roomIdInput" placeholder="输入6位房间号">
@@ -134,29 +203,71 @@
                 <p>房间密码：<strong id="displayPassword"></strong></p>
                 <p style="color: #999; font-size: 12px;">把房间号和密码发给朋友，邀请他们加入</p>
             </div>
-            <div class="player-list" id="playerList"></div>
-            <div style="margin: 10px 0;">
-                <select id="seat1" style="padding: 8px; margin: 5px;">
-                    <option value="0">座位1</option>
-                    <option value="1">座位2</option>
-                    <option value="2">座位3</option>
-                    <option value="3">座位4</option>
-                </select>
-                <span>↔</span>
-                <select id="seat2" style="padding: 8px; margin: 5px;">
-                    <option value="0">座位1</option>
-                    <option value="1">座位2</option>
-                    <option value="2" selected>座位3</option>
-                    <option value="3">座位4</option>
-                </select>
-                <button class="btn btn-secondary" onclick="swapSeat()" style="display: inline; padding: 8px 15px;">交换座位</button>
+
+            <!-- 座位布局：对面是队友 -->
+            <div class="seats-layout">
+                <div class="seat empty" id="seat2" onclick="clickSeat(2)">
+                    <div class="seat-name">座位3（对家）</div>
+                    <div class="seat-status" id="seat2-status">空座位</div>
+                </div>
+                <div class="seat empty" id="seat1" onclick="clickSeat(1)">
+                    <div class="seat-name">座位2（下家）</div>
+                    <div class="seat-status" id="seat1-status">空座位</div>
+                </div>
+                <div class="seat empty" id="seat3" onclick="clickSeat(3)">
+                    <div class="seat-name">座位4（上家）</div>
+                    <div class="seat-status" id="seat3-status">空座位</div>
+                </div>
+                <div class="seat empty" id="seat0" onclick="clickSeat(0)">
+                    <div class="seat-name">座位1（你）</div>
+                    <div class="seat-status" id="seat0-status">空座位</div>
+                </div>
             </div>
-            <button class="btn btn-secondary" onclick="addAI()">添加AI玩家</button>
-            <button class="btn btn-primary" onclick="startGame()">开始游戏</button>
-            <button class="btn" style="background: #eee;" onclick="leaveRoom()">离开房间</button>
+
+            <!-- 操作按钮 -->
+            <div class="controls">
+                <button class="btn btn-primary" id="readyBtn" onclick="toggleReady()">准备</button>
+
+                <!-- 房主专属操作 -->
+                <div id="hostControls" class="hidden">
+                    <div style="margin: 10px 0; text-align: left; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <p style="font-weight: bold; margin-bottom: 8px;">房主操作：</p>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <span>添加AI到：</span>
+                            <select id="aiSeat">
+                                <option value="0">座位1</option>
+                                <option value="1">座位2</option>
+                                <option value="2">座位3</option>
+                                <option value="3">座位4</option>
+                            </select>
+                            <button class="btn btn-secondary" style="width: auto; margin: 0;" onclick="addAIToSeat()">添加AI</button>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 8px;">
+                            <span>交换座位：</span>
+                            <select id="swapSeat1">
+                                <option value="0">座位1</option>
+                                <option value="1">座位2</option>
+                                <option value="2">座位3</option>
+                                <option value="3">座位4</option>
+                            </select>
+                            <span>↔</span>
+                            <select id="swapSeat2">
+                                <option value="0">座位1</option>
+                                <option value="1" selected>座位2</option>
+                                <option value="2">座位3</option>
+                                <option value="3">座位4</option>
+                            </select>
+                            <button class="btn btn-secondary" style="width: auto; margin: 0;" onclick="swapSeat()">交换</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="startGame()">开始游戏</button>
+                </div>
+
+                <button class="btn" style="background: #eee;" onclick="leaveRoom()">离开房间</button>
+            </div>
         </div>
 
-        <!-- 游戏界面（稍后填充） -->
+        <!-- 游戏界面 -->
         <div id="gameArea" class="hidden">
             <p>游戏界面加载中...</p>
         </div>
@@ -166,6 +277,9 @@
         let socket;
         let currentRoomId = null;
         let isHost = false;
+        let mySeat = -1;
+        let isReady = false;
+        let roomData = null;
 
         function showMainMenu() {
             document.getElementById('mainMenu').classList.remove('hidden');
@@ -180,44 +294,37 @@
         }
 
         function startSinglePlayer() {
-            // 跳转到单机版游戏
             window.location.href = 'game.html?mode=single';
         }
 
         function initSocket() {
             socket = io();
-            
-            socket.on('playerJoined', (data) => {
-                updatePlayerList(data.players);
-            });
 
-            socket.on('playerLeft', (data) => {
-                updatePlayerList(data.players);
+            socket.on('roomUpdate', (data) => {
+                roomData = data;
+                updateSeats();
             });
 
             socket.on('gameStart', (data) => {
-                // 跳转到游戏界面
                 window.location.href = 'game.html?mode=online&room=' + currentRoomId;
             });
         }
 
         function createRoom() {
             const name = document.getElementById('playerName').value;
-            if (!name) {
-                alert('请输入昵称');
-                return;
-            }
+            if (!name) { alert('请输入昵称'); return; }
             if (!socket) initSocket();
-            
+
             socket.emit('createRoom', { playerName: name }, (response) => {
                 if (response.success) {
                     currentRoomId = response.roomId;
                     isHost = true;
+                    mySeat = 0;
                     document.getElementById('displayRoomId').textContent = response.roomId;
                     document.getElementById('displayPassword').textContent = response.password;
                     document.getElementById('onlineMenu').classList.add('hidden');
                     document.getElementById('roomWaiting').classList.remove('hidden');
-                    updatePlayerList([name]);
+                    document.getElementById('hostControls').classList.remove('hidden');
                 } else {
                     alert(response.message);
                 }
@@ -228,27 +335,48 @@
             const name = document.getElementById('playerName').value;
             const roomId = document.getElementById('roomIdInput').value;
             const password = document.getElementById('roomPasswordInput').value;
-            if (!name || !roomId || !password) {
-                alert('请填写完整信息');
-                return;
-            }
+            if (!name || !roomId || !password) { alert('请填写完整信息'); return; }
             if (!socket) initSocket();
-            
+
             socket.emit('joinRoom', { roomId: roomId, password: password, playerName: name }, (response) => {
                 if (response.success) {
                     currentRoomId = roomId;
                     isHost = false;
+                    mySeat = response.seat;
                     document.getElementById('onlineMenu').classList.add('hidden');
                     document.getElementById('roomWaiting').classList.remove('hidden');
-                    alert('加入房间成功！等待房主开始游戏');
                 } else {
                     alert(response.message);
                 }
             });
         }
 
-        function addAI() {
-            socket.emit('addAI', {}, (response) => {
+        function clickSeat(seatIndex) {
+            // 点击空座位坐下
+            if (roomData && roomData.seats[seatIndex] === false) {
+                socket.emit('takeSeat', { seat: seatIndex }, (response) => {
+                    if (response.success) {
+                        mySeat = seatIndex;
+                    } else {
+                        alert(response.message);
+                    }
+                });
+            }
+        }
+
+        function toggleReady() {
+            isReady = !isReady;
+            socket.emit('toggleReady', {}, (response) => {
+                if (!response.success) {
+                    isReady = !isReady;
+                    alert(response.message);
+                }
+            });
+        }
+
+        function addAIToSeat() {
+            const seat = parseInt(document.getElementById('aiSeat').value);
+            socket.emit('addAI', { seat: seat }, (response) => {
                 if (!response.success) {
                     alert(response.message);
                 }
@@ -256,12 +384,9 @@
         }
 
         function swapSeat() {
-            const seat1 = parseInt(document.getElementById('seat1').value);
-            const seat2 = parseInt(document.getElementById('seat2').value);
-            if (seat1 === seat2) {
-                alert('请选择不同的座位');
-                return;
-            }
+            const seat1 = parseInt(document.getElementById('swapSeat1').value);
+            const seat2 = parseInt(document.getElementById('swapSeat2').value);
+            if (seat1 === seat2) { alert('请选择不同的座位'); return; }
             socket.emit('swapSeat', { seat1: seat1, seat2: seat2 }, (response) => {
                 if (!response.success) {
                     alert(response.message);
@@ -284,15 +409,34 @@
             showMainMenu();
         }
 
-        function updatePlayerList(players) {
-            const listEl = document.getElementById('playerList');
-            listEl.innerHTML = '';
-            players.forEach((name, index) => {
-                const div = document.createElement('div');
-                div.className = 'player-item';
-                div.innerHTML = `<span>座位${index + 1}</span><span>${name}</span>`;
-                listEl.appendChild(div);
-            });
+        function updateSeats() {
+            if (!roomData) return;
+
+            for (let i = 0; i < 4; i++) {
+                const seatEl = document.getElementById('seat' + i);
+                const statusEl = document.getElementById('seat' + i + '-status');
+
+                if (roomData.seats[i]) {
+                    // 有人坐
+                    seatEl.classList.remove('empty');
+                    seatEl.classList.add('occupied');
+                    const name = roomData.playerNames[i] || '玩家' + (i+1);
+                    const ready = roomData.ready && roomData.ready[i];
+                    statusEl.innerHTML = name + (ready ? '<div class="seat-ready-badge">已准备</div>' : '');
+                    if (ready) seatEl.classList.add('ready');
+                    else seatEl.classList.remove('ready');
+                } else {
+                    // 空座位
+                    seatEl.classList.add('empty');
+                    seatEl.classList.remove('occupied', 'ready');
+                    statusEl.textContent = '空座位（点击坐下）';
+                }
+            }
+
+            // 更新准备按钮
+            const readyBtn = document.getElementById('readyBtn');
+            readyBtn.textContent = isReady ? '取消准备' : '准备';
+            readyBtn.style.background = isReady ? '#e53935' : '';
         }
     </script>
 </body>
