@@ -135,6 +135,22 @@
                 <p style="color: #999; font-size: 12px;">把房间号和密码发给朋友，邀请他们加入</p>
             </div>
             <div class="player-list" id="playerList"></div>
+            <div style="margin: 10px 0;">
+                <select id="seat1" style="padding: 8px; margin: 5px;">
+                    <option value="0">座位1</option>
+                    <option value="1">座位2</option>
+                    <option value="2">座位3</option>
+                    <option value="3">座位4</option>
+                </select>
+                <span>↔</span>
+                <select id="seat2" style="padding: 8px; margin: 5px;">
+                    <option value="0">座位1</option>
+                    <option value="1">座位2</option>
+                    <option value="2" selected>座位3</option>
+                    <option value="3">座位4</option>
+                </select>
+                <button class="btn btn-secondary" onclick="swapSeat()" style="display: inline; padding: 8px 15px;">交换座位</button>
+            </div>
             <button class="btn btn-secondary" onclick="addAI()">添加AI玩家</button>
             <button class="btn btn-primary" onclick="startGame()">开始游戏</button>
             <button class="btn" style="background: #eee;" onclick="leaveRoom()">离开房间</button>
@@ -233,6 +249,20 @@
 
         function addAI() {
             socket.emit('addAI', {}, (response) => {
+                if (!response.success) {
+                    alert(response.message);
+                }
+            });
+        }
+
+        function swapSeat() {
+            const seat1 = parseInt(document.getElementById('seat1').value);
+            const seat2 = parseInt(document.getElementById('seat2').value);
+            if (seat1 === seat2) {
+                alert('请选择不同的座位');
+                return;
+            }
+            socket.emit('swapSeat', { seat1: seat1, seat2: seat2 }, (response) => {
                 if (!response.success) {
                     alert(response.message);
                 }
