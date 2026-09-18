@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v33（手机横屏优化版）</title>
+<title>港港掼蛋 v34（手机横屏优化版）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
 body{
@@ -307,7 +307,9 @@ body{
 }
 
 
-/* v32: 直接旋转90度 + 横屏优化 */
+
+
+/* v34: 直接旋转90度 + 优化横屏适配 */
 @media (max-width: 768px) {
     body {
         transform: rotate(90deg);
@@ -322,144 +324,162 @@ body{
     
     /* 顶部栏 - 更小 */
     .top-bar { 
-        height: 30px; 
-        padding: 0 8px; 
+        height: 28px; 
+        padding: 0 6px; 
     }
     .top-bar .title { 
-        font-size: 12px; 
+        font-size: 11px; 
     }
     .top-bar .info { 
-        gap: 5px; 
-        font-size: 9px; 
+        gap: 4px; 
+        font-size: 8px; 
     }
     .top-bar .info span { 
-        padding: 2px 6px; 
+        padding: 1px 5px; 
     }
     .top-bar .restart-btn { 
-        padding: 2px 6px; 
-        font-size: 9px; 
+        padding: 1px 5px; 
+        font-size: 8px; 
     }
     
     /* 玩家 - 更小，位置调整 */
     .player .avatar { 
-        width: 28px; 
-        height: 28px; 
-        font-size: 14px; 
+        width: 24px; 
+        height: 24px; 
+        font-size: 12px; 
     }
     .player .name { 
-        font-size: 9px; 
-        padding: 1px 5px; 
+        font-size: 8px; 
+        padding: 1px 4px; 
     }
     .player .count { 
-        font-size: 8px; 
+        font-size: 7px; 
     }
     .player.top { 
-        top: 35px; 
+        top: 30px; 
     }
     .player.left { 
-        left: 8px; 
+        left: 6px; 
     }
     .player.right { 
-        right: 8px; 
+        right: 6px; 
     }
     .player.bottom { 
-        bottom: 95px; 
+        bottom: 80px; 
     }
     
-    /* 出牌区域 - 调整位置 */
+    /* 出牌区域 - 更小，调整位置 */
     .play-area { 
-        width: 180px; 
-        min-height: 50px; 
+        width: 150px; 
+        min-height: 40px; 
         top: 45%;
     }
     .play-cards { 
-        gap: 2px; 
-        min-height: 35px; 
+        gap: 1px; 
+        min-height: 28px; 
     }
     .play-info { 
-        font-size: 10px; 
-        margin-top: 4px; 
+        font-size: 9px; 
+        margin-top: 3px; 
+    }
+    
+    /* 出牌的牌 - 更小 */
+    .mini-play-card { 
+        width: 24px; 
+        height: 34px; 
+        font-size: 6px; 
+        margin-left: -4px; 
+    }
+    .mini-play-card .val { 
+        font-size: 8px; 
+    }
+    .mini-play-card .suit { 
+        font-size: 7px; 
     }
     
     /* 其他玩家的牌 - 更小 */
     .player-cards { 
-        max-width: 80px; 
+        max-width: 60px; 
     }
     .player-cards.top-cards { 
-        top: 70px; 
+        top: 60px; 
     }
     .player-cards.left-cards { 
-        left: 35px; 
+        left: 25px; 
     }
     .player-cards.right-cards { 
-        right: 35px; 
+        right: 25px; 
     }
     
-    /* 手牌区域 - 更小 */
+    /* 手牌区域 - 更高，确保所有牌都能显示 */
     .hand-area { 
-        height: 80px; 
-        padding-bottom: 3px; 
+        height: 70px; 
+        padding-bottom: 2px; 
     }
     .hand-cards { 
-        height: 60px; 
-        padding: 0 5px; 
+        height: 50px; 
+        padding: 0 3px; 
+        /* 允许横向滚动，确保所有牌都能显示 */
+        overflow-x: auto;
+        overflow-y: hidden;
+        flex-wrap: nowrap;
     }
     .card-group { 
-        margin: 0 4px; 
-        padding-top: 8px; 
+        margin: 0 3px; 
+        padding-top: 6px; 
     }
     .group-label { 
-        font-size: 7px; 
-        padding: 1px 3px; 
+        font-size: 6px; 
+        padding: 1px 2px; 
     }
     
     /* 牌 - 更小，确保完整显示 */
     .card { 
-        width: 30px; 
-        height: 42px; 
-        margin-left: -6px; 
-        padding: 2px 3px; 
-        font-size: 8px; 
+        width: 26px; 
+        height: 38px; 
+        margin-left: -5px; 
+        padding: 1px 2px; 
+        font-size: 7px; 
     }
     .card.selected { 
-        transform: translateY(-10px); 
+        transform: translateY(-8px); 
     }
     .card .card-top .val { 
-        font-size: 10px; 
+        font-size: 9px; 
     }
     .card .card-top .suit { 
-        font-size: 8px; 
+        font-size: 7px; 
     }
     .card .card-center { 
-        font-size: 14px; 
+        font-size: 12px; 
     }
     .card .card-bottom .val { 
-        font-size: 10px; 
+        font-size: 9px; 
     }
     .card .card-bottom .suit { 
-        font-size: 8px; 
+        font-size: 7px; 
     }
     
-    /* 操作按钮 - 更小 */
+    /* 操作按钮 - 更小，往上移，避免和牌重叠 */
     .action-bar { 
-        gap: 4px; 
-        margin-top: 2px; 
+        gap: 3px; 
+        margin-top: 1px; 
     }
     .action-btn { 
-        padding: 3px 7px; 
-        font-size: 9px; 
+        padding: 2px 5px; 
+        font-size: 8px; 
     }
     
     /* 提示框 - 适配手机 */
     .hint-box { 
-        max-width: 90%; 
-        padding: 12px; 
+        max-width: 85%; 
+        padding: 10px; 
     }
     .hint-box h3 { 
-        font-size: 12px; 
+        font-size: 11px; 
     }
     .hint-option { 
-        padding: 5px 8px; 
+        padding: 4px 6px; 
     }
 }
 </style>
