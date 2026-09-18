@@ -2083,7 +2083,28 @@ function closeHint(){
     document.getElementById('hintModal').classList.remove('show');
 }
 
-window.onload=initGame;
+// v19: 监听屏幕旋转，自动隐藏竖屏提示
+function updateOrientation() {
+    const tip = document.querySelector('.landscape-tip');
+    if (!tip) return;
+    const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+    const isMobile = window.innerWidth <= 768;
+    if (isPortrait && isMobile) {
+        tip.style.display = 'flex';
+    } else {
+        tip.style.display = 'none';
+    }
+}
+
+window.addEventListener('orientationchange', function() {
+    setTimeout(updateOrientation, 100);
+});
+window.addEventListener('resize', updateOrientation);
+
+window.onload=function() {
+    initGame();
+    updateOrientation();
+};
 </script>
 </body>
 </html>
