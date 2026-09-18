@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v28（直接旋转90度）</title>
+<title>港港掼蛋 v29（手机横屏优化版）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
 body{
@@ -324,7 +324,9 @@ body{
     .action-bar { gap: 8px; margin-top: 5px; }
     .action-btn { padding: 5px 10px; font-size: 11px; }
 }
-/* 直接旋转90度 */
+
+
+/* 直接旋转90度 - v29优化版 */
 @media (max-width: 768px) {
     body {
         transform: rotate(90deg);
@@ -337,32 +339,105 @@ body{
         overflow: hidden;
     }
     
-    /* 调整牌的大小，避免挡到下面文字 */
-    .card {
-        width: 30px;
-        height: 45px;
-        margin-left: -6px;
-        padding: 2px 3px;
-        font-size: 11px;
+    /* 调整顶部栏 */
+    .top-bar { 
+        height: 25px; 
+        padding: 0 8px; 
+    }
+    .top-bar .title { 
+        font-size: 10px; 
+    }
+    .top-bar .info { 
+        gap: 4px; 
+        font-size: 9px; 
+    }
+    .top-bar .info span { 
+        padding: 2px 6px; 
+    }
+    .restart-btn { 
+        padding: 2px 6px; 
+        font-size: 9px; 
     }
     
-    .hand-area {
-        height: 90px;
-        padding-bottom: 5px;
+    /* 调整玩家位置 */
+    .player .avatar { 
+        width: 25px; 
+        height: 25px; 
+        font-size: 14px; 
+    }
+    .player .name { 
+        font-size: 9px; 
+        padding: 1px 4px; 
+    }
+    .player .count { 
+        font-size: 8px; 
+    }
+    .player.top { 
+        top: 28px; 
+    }
+    .player.bottom { 
+        bottom: 80px; 
     }
     
-    .hand-cards {
-        height: 65px;
+    /* 调整出牌区域 */
+    .play-area { 
+        width: 150px; 
+        min-height: 40px; 
+    }
+    .play-cards { 
+        gap: 2px; 
+        min-height: 30px; 
+    }
+    .play-info { 
+        font-size: 9px; 
+        margin-top: 3px; 
     }
     
-    .action-bar {
-        gap: 5px;
-        margin-top: 3px;
+    /* 调整手牌区域 */
+    .hand-area { 
+        height: 70px; 
+        padding-bottom: 3px; 
+    }
+    .hand-cards { 
+        height: 50px; 
+        padding: 0 5px; 
     }
     
-    .action-btn {
-        padding: 4px 8px;
-        font-size: 10px;
+    /* 调整牌的大小 - 更小，确保完整显示 */
+    .card { 
+        width: 22px; 
+        height: 32px; 
+        margin-left: -5px; 
+        padding: 1px 2px; 
+        font-size: 8px; 
+    }
+    .card.selected { 
+        transform: translateY(-8px); 
+    }
+    .card .card-top .val { 
+        font-size: 9px; 
+    }
+    .card .card-top .suit { 
+        font-size: 7px; 
+    }
+    .card .card-center { 
+        font-size: 12px; 
+    }
+    .card .card-bottom .val { 
+        font-size: 9px; 
+    }
+    .card .card-bottom .suit { 
+        font-size: 7px; 
+    }
+    
+    /* 调整操作按钮 */
+    .action-bar { 
+        gap: 4px; 
+        margin-top: 2px; 
+    }
+    .action-btn { 
+        padding: 3px 6px; 
+        font-size: 9px; 
     }
 }
 </style>
