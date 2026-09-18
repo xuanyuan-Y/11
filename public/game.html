@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v27（手机横屏版）</title>
+<title>港港掼蛋 v28（直接旋转90度）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
 body{
@@ -323,7 +323,49 @@ body{
     
     .action-bar { gap: 8px; margin-top: 5px; }
     .action-btn { padding: 5px 10px; font-size: 11px; }
-}</style>
+}
+/* 直接旋转90度 */
+@media (max-width: 768px) {
+    body {
+        transform: rotate(90deg);
+        transform-origin: top left;
+        width: 100vh;
+        height: 100vw;
+        position: absolute;
+        top: 0;
+        left: 100vw;
+        overflow: hidden;
+    }
+    
+    /* 调整牌的大小，避免挡到下面文字 */
+    .card {
+        width: 30px;
+        height: 45px;
+        margin-left: -6px;
+        padding: 2px 3px;
+        font-size: 11px;
+    }
+    
+    .hand-area {
+        height: 90px;
+        padding-bottom: 5px;
+    }
+    
+    .hand-cards {
+        height: 65px;
+    }
+    
+    .action-bar {
+        gap: 5px;
+        margin-top: 3px;
+    }
+    
+    .action-btn {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+}
+</style>
 </head>
 <body>
 
