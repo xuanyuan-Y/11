@@ -195,6 +195,63 @@ body{
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:rgba(0,0,0,0.2)}
 ::-webkit-scrollbar-thumb{background:rgba(255,215,0,0.5);border-radius:3px}
+
+/* v18: 手机端适配 */
+@media (max-width: 768px) {
+    .top-bar { height: 36px; padding: 0 10px; }
+    .top-bar .title { font-size: 13px; }
+    .top-bar .info { gap: 6px; font-size: 10px; }
+    .top-bar .restart-btn { padding: 3px 8px; font-size: 10px; }
+    
+    .player .avatar { width: 32px; height: 32px; font-size: 16px; }
+    .player .name { font-size: 11px; padding: 2px 6px; }
+    .player .count { font-size: 11px; }
+    .player.top { top: 45px; }
+    .player.left { left: 5px; }
+    .player.right { right: 5px; }
+    .player.bottom { bottom: 155px; }
+    
+    .play-area { width: 200px; min-height: 70px; }
+    .play-cards { gap: 2px; min-height: 50px; }
+    .play-info { font-size: 12px; margin-top: 8px; }
+    
+    .player-cards { max-width: 120px; }
+    .player-cards.top-cards { top: 95px; }
+    .player-cards.left-cards { left: 40px; }
+    .player-cards.right-cards { right: 40px; }
+    
+    .hand-area { height: 160px; padding-bottom: 4px; }
+    .hand-cards { height: 120px; padding: 0 8px; }
+    .card-group { margin: 0 6px; padding-top: 12px; }
+    .group-label { font-size: 8px; padding: 1px 4px; }
+    
+    .card { width: 42px; height: 62px; margin-left: -8px; padding: 3px 4px; }
+    .card.selected { transform: translateY(-16px); }
+    
+    .action-btns { bottom: 155px; right: 10px; gap: 6px; }
+    .btn { padding: 7px 14px; font-size: 12px; }
+    
+    .hint-box { max-width: 90%; padding: 15px; }
+    .game-over-box { padding: 20px; max-width: 90%; }
+}
+
+@media (max-width: 480px) {
+    .card { width: 36px; height: 54px; margin-left: -6px; }
+    .hand-area { height: 140px; }
+    .hand-cards { height: 105px; }
+    .player.bottom { bottom: 135px; }
+    .action-btns { bottom: 135px; }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    .hand-area { height: 100px; }
+    .hand-cards { height: 75px; }
+    .card { width: 32px; height: 46px; }
+    .player.bottom { bottom: 95px; }
+    .action-btns { bottom: 95px; }
+    .top-bar { height: 30px; }
+    .player.top { top: 35px; }
+}
 </style>
 </head>
 <body>
