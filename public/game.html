@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v30（无提示版）</title>
+<title>港港掼蛋 v31（手机横屏优化版）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
 body{
@@ -134,11 +134,19 @@ body{
 .action-btn.restore{background:linear-gradient(135deg,#795548,#4e342e);color:#fff}
 .action-btn.group{background:linear-gradient(135deg,#00bcd4,#00838f);color:#fff}
 
-
+.sort-tip{
+    position:absolute;top:48px;left:50%;transform:translateX(-50%);
+    background:linear-gradient(135deg,rgba(255,152,0,0.95),rgba(230,81,0,0.95));color:#fff;
+    padding:6px 14px;border-radius:15px;font-size:11px;z-index:50;display:none;
+    box-shadow:0 3px 10px rgba(0,0,0,0.4);font-weight:bold;
+}
 .sort-tip.show{display:block;animation:slideDown 0.3s ease}
 @keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
-
+.hint-modal{
+    position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);
+    display:flex;align-items:center;justify-content:center;z-index:1000;display:none;
+}
 .hint-modal.show{display:flex}
 .hint-box{
     background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:20px;border-radius:15px;text-align:center;
@@ -160,7 +168,10 @@ body{
 }
 .hint-close:hover{background:linear-gradient(135deg,#777,#555)}
 
-
+.game-over-modal{
+    position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);
+    display:flex;align-items:center;justify-content:center;z-index:1000;display:none;
+}
 .game-over-modal.show{display:flex}
 .game-over-box{
     background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:30px;border-radius:18px;text-align:center;
@@ -232,202 +243,160 @@ body{
     .action-btns { bottom: 135px; }
 }
 
-/* v19: 手机横屏优化（针对华为Mate等长屏手机） */
-@media (orientation: landscape) and (max-height: 900px) {
-    .top-bar { height: 32px; padding: 0 10px; }
-    .top-bar .title { font-size: 13px; }
-    .top-bar .info { gap: 5px; font-size: 10px; }
-    
-    .player .avatar { width: 30px; height: 30px; font-size: 15px; }
-    .player .name { font-size: 10px; padding: 2px 6px; }
-    .player.top { top: 40px; }
-    .player.left { left: 5px; }
-    .player.right { right: 5px; }
-    .player.bottom { bottom: 110px; }
-    
-    .play-area { width: 220px; min-height: 60px; }
-    .play-cards { gap: 2px; min-height: 45px; }
-    .play-info { font-size: 12px; margin-top: 6px; }
-    
-    .player-cards { max-width: 100px; }
-    .player-cards.top-cards { top: 85px; }
-    .player-cards.left-cards { left: 35px; }
-    .player-cards.right-cards { right: 35px; }
-    
-    .hand-area { height: 120px; padding-bottom: 4px; }
-    .hand-cards { height: 90px; padding: 0 10px; }
-    .card-group { margin: 0 5px; padding-top: 10px; }
-    .group-label { font-size: 8px; padding: 1px 4px; }
-    
-    .card { width: 38px; height: 56px; margin-left: -7px; padding: 3px 4px; }
-    .card.selected { transform: translateY(-14px); }
-    
-    .action-btns { bottom: 110px; right: 10px; gap: 5px; }
-    .btn { padding: 6px 12px; font-size: 11px; }
+
+
+
 }
 
-/* 竖屏提示 */
-
-.landscape-tip.show { display: flex; }
-.landscape-tip .icon { font-size: 60px; margin-bottom: 20px; }
-.landscape-tip .text { font-size: 18px; line-height: 1.8; }
-
-@media (orientation: portrait) and (max-width: 768px) {
-    
-}
-/* 手机横屏适配 */
-@media (orientation: landscape) and (max-height: 900px) {
-    .top-bar { height: 30px; padding: 0 10px; }
-    .top-bar .title { font-size: 12px; }
-    .top-bar .info { gap: 5px; font-size: 10px; }
-    .restart-btn { padding: 3px 8px; font-size: 10px; }
-    
-    .player .avatar { width: 35px; height: 35px; font-size: 18px; }
-    .player .name { font-size: 10px; padding: 2px 6px; }
-    .player .count { font-size: 9px; }
-    .player.top { top: 35px; }
-    .player.bottom { bottom: 120px; }
-    
-    .play-area { width: 180px; min-height: 50px; }
-    .play-cards { gap: 2px; min-height: 40px; }
-    .play-info { font-size: 11px; margin-top: 5px; }
-    
-    .hand-area { height: 110px; padding: 5px; }
-    .hand-cards { height: 75px; padding: 0 10px; }
-    
-    .card { width: 35px; height: 50px; margin-left: -10px; padding: 3px; font-size: 11px; }
-    .card.selected { transform: translateY(-12px); }
-    
-    .action-bar { gap: 8px; margin-top: 5px; }
-    .action-btn { padding: 5px 10px; font-size: 11px; }
-}
-
-
-/* 直接旋转90度 - v29优化版 */
-@media (max-width: 768px) {
-    body {
-        transform: rotate(90deg);
-        transform-origin: top left;
-        width: 100vh;
-        height: 100vw;
-        position: absolute;
-        top: 0;
-        left: 100vw;
-        overflow: hidden;
-    }
-    
-    /* 调整顶部栏 */
+/* v31: 手机横屏优化版 - 真正适配手机横屏 */
+@media (orientation: landscape) and (max-height: 1000px) {
+    /* 顶部栏 - 更小 */
     .top-bar { 
-        height: 25px; 
+        height: 30px; 
         padding: 0 8px; 
     }
     .top-bar .title { 
-        font-size: 10px; 
+        font-size: 12px; 
     }
     .top-bar .info { 
-        gap: 4px; 
+        gap: 5px; 
         font-size: 9px; 
     }
     .top-bar .info span { 
         padding: 2px 6px; 
     }
-    .restart-btn { 
+    .top-bar .restart-btn { 
         padding: 2px 6px; 
         font-size: 9px; 
     }
     
-    /* 调整玩家位置 */
+    /* 玩家 - 更小，位置调整 */
     .player .avatar { 
-        width: 25px; 
-        height: 25px; 
+        width: 28px; 
+        height: 28px; 
         font-size: 14px; 
     }
     .player .name { 
         font-size: 9px; 
-        padding: 1px 4px; 
+        padding: 1px 5px; 
     }
     .player .count { 
         font-size: 8px; 
     }
     .player.top { 
-        top: 28px; 
+        top: 35px; 
+    }
+    .player.left { 
+        left: 8px; 
+    }
+    .player.right { 
+        right: 8px; 
     }
     .player.bottom { 
-        bottom: 80px; 
+        bottom: 95px; 
     }
     
-    /* 调整出牌区域 */
+    /* 出牌区域 - 调整位置 */
     .play-area { 
-        width: 150px; 
-        min-height: 40px; 
+        width: 180px; 
+        min-height: 50px; 
+        top: 45%;
     }
     .play-cards { 
         gap: 2px; 
-        min-height: 30px; 
+        min-height: 35px; 
     }
     .play-info { 
-        font-size: 9px; 
-        margin-top: 3px; 
+        font-size: 10px; 
+        margin-top: 4px; 
     }
     
-    /* 调整手牌区域 */
+    /* 其他玩家的牌 - 更小 */
+    .player-cards { 
+        max-width: 80px; 
+    }
+    .player-cards.top-cards { 
+        top: 70px; 
+    }
+    .player-cards.left-cards { 
+        left: 35px; 
+    }
+    .player-cards.right-cards { 
+        right: 35px; 
+    }
+    
+    /* 手牌区域 - 更小 */
     .hand-area { 
-        height: 70px; 
+        height: 80px; 
         padding-bottom: 3px; 
     }
     .hand-cards { 
-        height: 50px; 
+        height: 60px; 
         padding: 0 5px; 
     }
+    .card-group { 
+        margin: 0 4px; 
+        padding-top: 8px; 
+    }
+    .group-label { 
+        font-size: 7px; 
+        padding: 1px 3px; 
+    }
     
-    /* 调整牌的大小 - 更小，确保完整显示 */
+    /* 牌 - 更小，确保完整显示 */
     .card { 
-        width: 22px; 
-        height: 32px; 
-        margin-left: -5px; 
-        padding: 1px 2px; 
+        width: 30px; 
+        height: 42px; 
+        margin-left: -6px; 
+        padding: 2px 3px; 
         font-size: 8px; 
     }
     .card.selected { 
-        transform: translateY(-8px); 
+        transform: translateY(-10px); 
     }
     .card .card-top .val { 
-        font-size: 9px; 
+        font-size: 10px; 
     }
     .card .card-top .suit { 
-        font-size: 7px; 
+        font-size: 8px; 
     }
     .card .card-center { 
-        font-size: 12px; 
+        font-size: 14px; 
     }
     .card .card-bottom .val { 
-        font-size: 9px; 
+        font-size: 10px; 
     }
     .card .card-bottom .suit { 
-        font-size: 7px; 
+        font-size: 8px; 
     }
     
-    /* 调整操作按钮 */
+    /* 操作按钮 - 更小 */
     .action-bar { 
         gap: 4px; 
         margin-top: 2px; 
     }
     .action-btn { 
-        padding: 3px 6px; 
+        padding: 3px 7px; 
         font-size: 9px; 
+    }
+    
+    /* 提示框 - 适配手机 */
+    .hint-box { 
+        max-width: 90%; 
+        padding: 12px; 
+    }
+    .hint-box h3 { 
+        font-size: 12px; 
+    }
+    .hint-option { 
+        padding: 5px 8px; 
     }
 }
 </style>
 </head>
 <body>
 
-<!-- 竖屏提示 -->
 
-    <div class="text">
-        请把手机横过来玩！<br>
-        横屏模式体验更好，牌能显示更多
-    </div>
-</div>
 
 <div class="top-bar">
     <div class="title">🎴 港港掼蛋</div>
@@ -453,7 +422,7 @@ body{
 <div class="player-cards left-cards" id="leftCards"></div>
 <div class="player-cards right-cards" id="rightCards"></div>
 
-
+<div class="sort-tip" id="sortTip">🔀 拖拽牌到目标位置，支持多选一起拖拽</div>
 
 <div class="hand-area">
     <div class="hand-cards" id="handCards"></div>
@@ -469,12 +438,19 @@ body{
     </div>
 </div>
 
-
+<div class="hint-modal" id="hintModal">
+    <div class="hint-box">
+        <h3>💡 出牌建议</h3>
+        <div class="hint-options" id="hintOptions"></div>
         <button class="hint-close" onclick="closeHint()">关闭</button>
     </div>
 </div>
 
-
+<div class="game-over-modal" id="gameOverModal">
+    <div class="game-over-box">
+        <h2>🎉 游戏结束</h2>
+        <p id="gameOverDesc"></p>
+        <div class="result" id="gameOverResult"></div>
         <p id="gameOverLevel"></p>
         <button class="action-btn play" onclick="restartGame()">再来一局</button>
     </div>
