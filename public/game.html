@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v32（手机横屏优化版）</title>
+<title>港港掼蛋 v33（手机横屏优化版）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
 body{
@@ -277,26 +277,7 @@ body{
     .btn { padding: 6px 12px; font-size: 11px; }
 }
 
-/* 竖屏提示 */
-.landscape-tip {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.95);
-    z-index: 9999;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-}
-.landscape-tip.show { display: flex; }
-.landscape-tip .icon { font-size: 60px; margin-bottom: 20px; }
-.landscape-tip .text { font-size: 18px; line-height: 1.8; }
 
-@media (orientation: portrait) and (max-width: 768px) {
-    .landscape-tip { display: flex; }
 }
 /* 手机横屏适配 */
 @media (orientation: landscape) and (max-height: 900px) {
@@ -485,14 +466,7 @@ body{
 </head>
 <body>
 
-<!-- 竖屏提示 -->
-<div class="landscape-tip">
-    <div class="icon">📱🔄</div>
-    <div class="text">
-        请把手机横过来玩！<br>
-        横屏模式体验更好，牌能显示更多
-    </div>
-</div>
+
 
 <div class="top-bar">
     <div class="title">🎴 港港掼蛋</div>
