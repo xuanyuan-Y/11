@@ -303,8 +303,14 @@ body{
 <body>
 
 <!-- 竖屏提示 -->
-<div class="landscape-tip">
+<div class="landscape-tip" id="landscapeTip">
     <div class="icon">📱🔄</div>
+    <div class="text">
+        建议把手机横过来玩！<br>
+        横屏模式体验更好，牌能显示更多
+    </div>
+    <button onclick="document.getElementById('landscapeTip').style.display='none'" style="margin-top:30px;padding:12px 30px;background:#2196f3;color:#fff;border:none;border-radius:8px;font-size:18px;cursor:pointer;box-shadow:0 4px 12px rgba(33,150,243,0.4);">✅ 知道了，继续玩</button>
+</div>
     <div class="text">
         请把手机横过来玩！<br>
         横屏模式体验更好，牌能显示更多
