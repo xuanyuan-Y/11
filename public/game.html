@@ -277,30 +277,6 @@ body{
     .btn { padding: 4px 8px; font-size: 9px; }
 }
 
-/* v21: 纯横屏适配 - 手机旋转到横屏才能玩 */
-
-/* 手机竖屏时显示提示 */
-.rotate-hint {
-    display: none;
-}
-
-@media (orientation: portrait) and (max-width: 768px) {
-    .rotate-hint {
-        display: flex;
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.95);
-        z-index: 99999;
-        color: #fff;
-        text-align: center;
-        padding: 20px;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        font-size: 24px;
-    }
-    .rotate-hint .icon { font-size: 80px; margin-bottom: 30px; }
-    .rotate-hint .text { line-height: 1.8; }
 }
 
 /* 手机横屏适配 */
@@ -338,12 +314,42 @@ body{
     .action-btns { bottom: 120px; right: 8px; gap: 5px; }
     .btn { padding: 5px 11px; font-size: 11px; }
 }
+
+/* v22: 直接横屏布局，手机端自动缩放 */
+
+/* 手机端适配：直接缩放整个游戏 */
+@media (max-width: 768px) {
+    /* 整个游戏容器缩放 */
+    .game-container {
+        transform: scale(0.8);
+        transform-origin: top left;
+        width: 125%;
+        height: 125%;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        transform: scale(0.6);
+        transform-origin: top left;
+        width: 166%;
+        height: 166%;
+    }
+}
+
+/* 横屏优化 */
+@media (orientation: landscape) and (max-height: 900px) {
+    .game-container {
+        transform: scale(0.9);
+        transform-origin: top left;
+        width: 111%;
+        height: 111%;
+    }
+}
 </style>
 </head>
 <body>
-<!-- 旋转提示 -->
-<div class="rotate-hint">
-    <div class="icon">📱🔄</div>
+
     <div class="text">
         请旋转手机到横屏模式<br>
         横屏才能正常玩掼蛋
