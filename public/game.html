@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v22</title>
+<title>港港掼蛋 v23</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
 body{
@@ -344,6 +344,20 @@ body{
         transform-origin: top left;
         width: 111%;
         height: 111%;
+    }
+}
+
+/* v23: 强制横屏，旋转90度 */
+@media (max-width: 768px) {
+    body {
+        transform: rotate(90deg);
+        transform-origin: top left;
+        width: 100vh;
+        height: 100vw;
+        position: absolute;
+        top: 0;
+        left: 100vw;
+        overflow: hidden;
     }
 }
 </style>
