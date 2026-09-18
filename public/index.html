@@ -3,116 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>鎺艰泲鍦ㄧ嚎</title>
+<title>掼蛋在线</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- 棣栭〉 -->
+<!-- 首页 -->
 <div id="page-home" class="page active">
   <div class="home-container">
-    <div class="logo">馃儚</div>
-    <h1>鎺艰泲鍦ㄧ嚎</h1>
-    <p class="subtitle">鍥涗汉瀵规垬 路 瀹炴椂鍦ㄧ嚎 路 v18</p>
+    <div class="logo">🃏</div>
+    <h1>掼蛋在线</h1>
+    <p class="subtitle">四人对战 · 实时在线 · v18</p>
     <div class="home-form">
-      <input type="text" id="inputName" placeholder="杈撳叆浣犵殑鏄电О" maxlength="8" value="鐜╁">
-      <button class="btn btn-primary" onclick="createRoom()">鍒涘缓鎴块棿</button>
-      <div class="divider">鎴?/div>
+      <input type="text" id="inputName" placeholder="输入你的昵称" maxlength="8" value="玩家">
+      <button class="btn btn-primary" onclick="createRoom()">创建房间</button>
+      <div class="divider">或</div>
       <div class="join-row">
-        <input type="text" id="inputRoomId" placeholder="杈撳叆6浣嶆埧闂村彿" maxlength="6">
-        <button class="btn btn-secondary" onclick="joinRoom()">鍔犲叆</button>
+        <input type="text" id="inputRoomId" placeholder="输入6位房间号" maxlength="6">
+        <button class="btn btn-secondary" onclick="joinRoom()">加入</button>
       </div>
     </div>
-    <p class="tip">绌轰綅浼氳嚜鍔ㄨˉ鏈哄櫒浜猴紝2浜哄嵆鍙紑灞€</p>
+    <p class="tip">空位会自动补机器人，2人即可开局</p>
   </div>
 </div>
 
-<!-- 鎴块棿绛夊緟椤?-->
+<!-- 房间等待页 -->
 <div id="page-room" class="page">
   <div class="room-container">
     <div class="room-header">
-      <h2>鎴块棿鍙凤細<span id="roomIdDisplay"></span></h2>
-      <button class="btn btn-small" onclick="copyRoomId()">澶嶅埗閭€璇?/button>
+      <h2>房间号：<span id="roomIdDisplay"></span></h2>
+      <button class="btn btn-small" onclick="copyRoomId()">复制邀请</button>
     </div>
     <div class="seats">
-      <div class="seat" id="seat-0"><div class="seat-avatar">馃槉</div><div class="seat-name">-</div><div class="seat-status"></div></div>
-      <div class="seat" id="seat-1"><div class="seat-avatar">馃槉</div><div class="seat-name">-</div><div class="seat-status"></div></div>
-      <div class="seat" id="seat-2"><div class="seat-avatar">馃槉</div><div class="seat-name">-</div><div class="seat-status"></div></div>
-      <div class="seat" id="seat-3"><div class="seat-avatar">馃槉</div><div class="seat-name">-</div><div class="seat-status"></div></div>
+      <div class="seat" id="seat-0"><div class="seat-avatar">😊</div><div class="seat-name">-</div><div class="seat-status"></div></div>
+      <div class="seat" id="seat-1"><div class="seat-avatar">😊</div><div class="seat-name">-</div><div class="seat-status"></div></div>
+      <div class="seat" id="seat-2"><div class="seat-avatar">😊</div><div class="seat-name">-</div><div class="seat-status"></div></div>
+      <div class="seat" id="seat-3"><div class="seat-avatar">😊</div><div class="seat-name">-</div><div class="seat-status"></div></div>
     </div>
     <div class="team-info">
-      <span class="team-a">馃數 钃濋槦锛?鍙?+ 3鍙?/span>
-      <span class="team-b">馃敶 绾㈤槦锛?鍙?+ 4鍙?/span>
+      <span class="team-a">🔵 蓝队：1号 + 3号</span>
+      <span class="team-b">🔴 红队：2号 + 4号</span>
     </div>
-    <button class="btn btn-primary btn-large" id="btnReady" onclick="toggleReady()">鍑嗗</button>
-    <button class="btn btn-ghost" onclick="leaveRoom()">绂诲紑鎴块棿</button>
+    <button class="btn btn-primary btn-large" id="btnReady" onclick="toggleReady()">准备</button>
+    <button class="btn btn-ghost" onclick="leaveRoom()">离开房间</button>
   </div>
 </div>
 
-<!-- 娓告垙椤?-->
+<!-- 游戏页 -->
 <div id="page-game" class="page">
   <div class="game-header">
     <div class="game-info">
-      <span class="level-badge">鎵?<span id="gameLevel">2</span></span>
-      <span class="round-badge">绗?<span id="gameRound">1</span> 杞?/span>
+      <span class="level-badge">打 <span id="gameLevel">2</span></span>
+      <span class="round-badge">第 <span id="gameRound">1</span> 轮</span>
     </div>
     <div class="game-scores">
-      <span class="score-a">钃?<span id="scoreA">0</span></span>
-      <span class="score-b">绾?<span id="scoreB">0</span></span>
+      <span class="score-a">蓝 <span id="scoreA">0</span></span>
+      <span class="score-b">红 <span id="scoreB">0</span></span>
     </div>
   </div>
 
   <div class="game-table">
-    <!-- 鍖楋紙2鍙蜂綅锛岄槦鍙嬶級 -->
+    <!-- 北（2号位，队友） -->
     <div class="player-pos pos-north">
       <div class="player-info" id="pinfo-2">
-        <span class="pname">闃熷弸</span>
+        <span class="pname">队友</span>
         <span class="pcount" id="pcount-2">27</span>
       </div>
       <div class="play-area" id="play-2"></div>
     </div>
-    <!-- 瑗匡紙1鍙蜂綅锛?-->
+    <!-- 西（1号位） -->
     <div class="player-pos pos-west">
       <div class="player-info" id="pinfo-1">
-        <span class="pname">瑗垮</span>
+        <span class="pname">西家</span>
         <span class="pcount" id="pcount-1">27</span>
       </div>
       <div class="play-area" id="play-1"></div>
     </div>
-    <!-- 涓滐紙3鍙蜂綅锛?-->
+    <!-- 东（3号位） -->
     <div class="player-pos pos-east">
       <div class="player-info" id="pinfo-3">
-        <span class="pname">涓滃</span>
+        <span class="pname">东家</span>
         <span class="pcount" id="pcount-3">27</span>
       </div>
       <div class="play-area" id="play-3"></div>
     </div>
-    <!-- 鍗楋紙0鍙蜂綅锛岃嚜宸憋級鍑虹墝鍖?-->
+    <!-- 南（0号位，自己）出牌区 -->
     <div class="play-area play-south" id="play-0"></div>
-    <!-- 娑堟伅 -->
+    <!-- 消息 -->
     <div class="game-msg" id="gameMsg"></div>
   </div>
 
-  <!-- 閫変腑鐗屽瀷鎻愮ず -->
+  <!-- 选中牌型提示 -->
   <div class="selected-info" id="selectedInfo" style="display:none;">
-    宸查€?<span id="selCount">0</span> 寮狅細<span id="selPattern">-</span>
+    已选 <span id="selCount">0</span> 张：<span id="selPattern">-</span>
   </div>
 
-  <!-- 鎿嶄綔鎸夐挳 -->
+  <!-- 操作按钮 -->
   <div class="action-bar">
-    <button class="btn btn-hint" onclick="showHint()">馃挕鎻愮ず</button>
-    <button class="btn btn-pass" id="btnPass" onclick="playerPass()">涓嶈</button>
-    <button class="btn btn-play" id="btnPlay" onclick="playerPlay()">鍑虹墝</button>
+    <button class="btn btn-hint" onclick="showHint()">💡提示</button>
+    <button class="btn btn-pass" id="btnPass" onclick="playerPass()">不要</button>
+    <button class="btn btn-play" id="btnPlay" onclick="playerPlay()">出牌</button>
   </div>
 
-  <!-- 鎵嬬墝鍖?-->
+  <!-- 手牌区 -->
   <div class="hand-area" id="handArea"></div>
 
-  <!-- 鍥炲悎缁撴潫閬僵 -->
+  <!-- 回合结束遮罩 -->
   <div class="round-overlay" id="roundOverlay" style="display:none;">
     <div class="round-box">
-      <h2 id="roundTitle">鏈疆缁撴潫</h2>
+      <h2 id="roundTitle">本轮结束</h2>
       <div id="roundDetail"></div>
-      <p class="round-next">3绉掑悗鑷姩寮€濮嬩笅涓€杞?..</p>
+      <p class="round-next">3秒后自动开始下一轮...</p>
     </div>
   </div>
 </div>
