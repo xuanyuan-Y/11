@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v29（手机横屏优化版）</title>
+<title>港港掼蛋 v30（无提示版）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
 body{
@@ -134,19 +134,11 @@ body{
 .action-btn.restore{background:linear-gradient(135deg,#795548,#4e342e);color:#fff}
 .action-btn.group{background:linear-gradient(135deg,#00bcd4,#00838f);color:#fff}
 
-.sort-tip{
-    position:absolute;top:48px;left:50%;transform:translateX(-50%);
-    background:linear-gradient(135deg,rgba(255,152,0,0.95),rgba(230,81,0,0.95));color:#fff;
-    padding:6px 14px;border-radius:15px;font-size:11px;z-index:50;display:none;
-    box-shadow:0 3px 10px rgba(0,0,0,0.4);font-weight:bold;
-}
+
 .sort-tip.show{display:block;animation:slideDown 0.3s ease}
 @keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
-.hint-modal{
-    position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);
-    display:flex;align-items:center;justify-content:center;z-index:1000;display:none;
-}
+
 .hint-modal.show{display:flex}
 .hint-box{
     background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:20px;border-radius:15px;text-align:center;
@@ -168,10 +160,7 @@ body{
 }
 .hint-close:hover{background:linear-gradient(135deg,#777,#555)}
 
-.game-over-modal{
-    position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);
-    display:flex;align-items:center;justify-content:center;z-index:1000;display:none;
-}
+
 .game-over-modal.show{display:flex}
 .game-over-box{
     background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:30px;border-radius:18px;text-align:center;
@@ -278,25 +267,13 @@ body{
 }
 
 /* 竖屏提示 */
-.landscape-tip {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.95);
-    z-index: 9999;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-}
+
 .landscape-tip.show { display: flex; }
 .landscape-tip .icon { font-size: 60px; margin-bottom: 20px; }
 .landscape-tip .text { font-size: 18px; line-height: 1.8; }
 
 @media (orientation: portrait) and (max-width: 768px) {
-    .landscape-tip { display: flex; }
+    
 }
 /* 手机横屏适配 */
 @media (orientation: landscape) and (max-height: 900px) {
@@ -445,8 +422,7 @@ body{
 <body>
 
 <!-- 竖屏提示 -->
-<div class="landscape-tip">
-    <div class="icon">📱🔄</div>
+
     <div class="text">
         请把手机横过来玩！<br>
         横屏模式体验更好，牌能显示更多
@@ -477,7 +453,7 @@ body{
 <div class="player-cards left-cards" id="leftCards"></div>
 <div class="player-cards right-cards" id="rightCards"></div>
 
-<div class="sort-tip" id="sortTip">🔀 拖拽牌到目标位置，支持多选一起拖拽</div>
+
 
 <div class="hand-area">
     <div class="hand-cards" id="handCards"></div>
@@ -493,19 +469,12 @@ body{
     </div>
 </div>
 
-<div class="hint-modal" id="hintModal">
-    <div class="hint-box">
-        <h3>💡 出牌建议</h3>
-        <div class="hint-options" id="hintOptions"></div>
+
         <button class="hint-close" onclick="closeHint()">关闭</button>
     </div>
 </div>
 
-<div class="game-over-modal" id="gameOverModal">
-    <div class="game-over-box">
-        <h2>🎉 游戏结束</h2>
-        <p id="gameOverDesc"></p>
-        <div class="result" id="gameOverResult"></div>
+
         <p id="gameOverLevel"></p>
         <button class="action-btn play" onclick="restartGame()">再来一局</button>
     </div>
