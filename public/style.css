@@ -10,7 +10,7 @@ body {
 .page { display: none; width: 100%; height: 100%; }
 .page.active { display: flex; }
 
-/* 首页 */
+/* 棣栭〉 */
 #page-home { align-items: center; justify-content: center; }
 .home-container { text-align: center; width: 90%; max-width: 400px; }
 .logo { font-size: 64px; margin-bottom: 10px; }
@@ -25,7 +25,7 @@ body {
 .divider { color: #81c784; margin: 16px 0; font-size: 14px; }
 .tip { color: #a5d6a7; font-size: 12px; margin-top: 20px; }
 
-/* 按钮 */
+/* 鎸夐挳 */
 .btn {
   border: none; border-radius: 12px; font-size: 16px; font-weight: bold;
   cursor: pointer; transition: all 0.15s; color: #fff;
@@ -38,7 +38,7 @@ body {
 .btn-large { padding: 16px; font-size: 18px; margin-top: 20px; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* 房间页 */
+/* 鎴块棿椤?*/
 #page-room { align-items: center; justify-content: center; }
 .room-container { width: 90%; max-width: 420px; text-align: center; }
 .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
@@ -57,7 +57,7 @@ body {
 .seat-status.ready { color: #4caf50; }
 .team-info { display: flex; justify-content: space-around; font-size: 12px; color: #a5d6a7; margin-bottom: 10px; }
 
-/* 游戏页 */
+/* 娓告垙椤?*/
 #page-game { flex-direction: column; }
 .game-header {
   display: flex; justify-content: space-between; align-items: center;
@@ -102,14 +102,14 @@ body {
 }
 .game-msg.show { opacity: 1; }
 
-/* 选中提示 */
+/* 閫変腑鎻愮ず */
 .selected-info {
   position: absolute; bottom: 145px; left: 12px;
   background: rgba(0,0,0,0.6); padding: 6px 12px; border-radius: 8px; font-size: 12px;
 }
 .selected-info #selPattern { color: #ffd700; font-weight: bold; }
 
-/* 操作栏 */
+/* 鎿嶄綔鏍?*/
 .action-bar {
   position: absolute; bottom: 145px; right: 12px; display: flex; gap: 8px;
 }
@@ -117,7 +117,7 @@ body {
 .btn-pass { background: linear-gradient(135deg, #757575, #424242); padding: 8px 16px; font-size: 14px; }
 .btn-play { background: linear-gradient(135deg, #43a047, #2e7d32); padding: 8px 16px; font-size: 14px; }
 
-/* 手牌区 */
+/* 鎵嬬墝鍖?*/
 .hand-area {
   position: absolute; bottom: 0; left: 0; right: 0; height: 130px;
   display: flex; justify-content: center; align-items: flex-end;
@@ -142,7 +142,7 @@ body {
 .hand-card.black { color: #212121; }
 .hand-card.wild { background: linear-gradient(135deg, #fff9c4, #fff59d); border: 2px solid #f9a825; }
 
-/* 回合结束 */
+/* 鍥炲悎缁撴潫 */
 .round-overlay {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center;
@@ -161,11 +161,89 @@ body {
 }
 .toast.show { opacity: 1; }
 
-/* 小屏适配 */
+/* 灏忓睆閫傞厤锛堟í灞忕煯灞忥級 */
 @media (max-height: 600px) {
   .hand-area { height: 110px; }
   .hand-card { width: 38px; height: 56px; }
   .play-south { bottom: 125px; }
   .action-bar { bottom: 125px; }
   .selected-info { bottom: 125px; }
+}
+
+/* 鎵嬫満绔栧睆閫傞厤锛堝搴﹀皬浜?68px锛?*/
+@media (max-width: 768px) {
+  .game-header { padding: 6px 10px; font-size: 12px; }
+  .level-badge { margin-right: 8px; }
+  .game-scores .score-a { margin-right: 8px; }
+  
+  /* 鐜╁浣嶇疆璋冩暣 */
+  .pos-north { top: 8px; }
+  .pos-west { left: 4px; }
+  .pos-east { right: 4px; }
+  .player-info { padding: 2px 8px; font-size: 11px; }
+  .player-info .pcount { font-size: 10px; }
+  
+  /* 鍑虹墝鍖?*/
+  .play-area { max-width: 100px; }
+  .play-south { bottom: 135px; max-width: 160px; }
+  .play-card { font-size: 10px; padding: 1px 4px; }
+  
+  /* 娑堟伅 */
+  .game-msg { font-size: 12px; padding: 6px 12px; }
+  
+  /* 閫変腑鎻愮ず */
+  .selected-info { bottom: 135px; left: 8px; font-size: 11px; padding: 4px 8px; }
+  
+  /* 鎿嶄綔鏍?*/
+  .action-bar { bottom: 135px; right: 8px; gap: 6px; }
+  .btn-hint { padding: 6px 10px; font-size: 12px; }
+  .btn-pass { padding: 6px 12px; font-size: 13px; }
+  .btn-play { padding: 6px 12px; font-size: 13px; }
+  
+  /* 鎵嬬墝鍖?*/
+  .hand-area { height: 120px; padding-bottom: 4px; }
+  .hand-card { width: 38px; height: 56px; margin-left: -12px; }
+  .hand-card .card-top { font-size: 9px; }
+  .hand-card .card-center { font-size: 14px; }
+  .hand-card .card-bottom { font-size: 9px; }
+  
+  /* 鍥炲悎缁撴潫 */
+  .round-box { padding: 20px; }
+  .round-box h2 { font-size: 20px; margin-bottom: 12px; }
+  .round-box #roundDetail { font-size: 13px; }
+}
+
+/* 鎵嬫満绔栧睆鏇村皬灞忓箷锛堝皬浜?80px锛?*/
+@media (max-width: 480px) {
+  .logo { font-size: 48px; }
+  .home-container h1 { font-size: 26px; }
+  .subtitle { margin-bottom: 20px; }
+  
+  .seat-avatar { font-size: 24px; }
+  .seat-name { font-size: 13px; }
+  
+  .hand-card { width: 34px; height: 50px; margin-left: -10px; }
+  .hand-card .card-center { font-size: 12px; }
+  
+  .play-area { max-width: 80px; }
+  .play-south { bottom: 125px; max-width: 140px; }
+  
+  .hand-area { height: 110px; }
+  .play-south { bottom: 125px; }
+  .action-bar { bottom: 125px; }
+  .selected-info { bottom: 125px; }
+}
+
+/* 妯睆鎵嬫満閫傞厤锛堥珮搴﹀皬浜?00px锛?*/
+@media (max-height: 500px) and (orientation: landscape) {
+  .hand-area { height: 90px; }
+  .hand-card { width: 32px; height: 46px; margin-left: -10px; }
+  .hand-card .card-center { font-size: 11px; }
+  
+  .play-south { bottom: 100px; }
+  .action-bar { bottom: 100px; }
+  .selected-info { bottom: 100px; }
+  
+  .game-header { padding: 4px 10px; }
+  .player-info { font-size: 10px; }
 }
