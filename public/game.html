@@ -22,7 +22,7 @@ body{
 .top-bar .info span{background:rgba(255,255,255,0.12);padding:3px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.1)}
 .top-bar .restart-btn{
     background:linear-gradient(135deg,#ff9800,#e65100);color:#fff;border:none;
-    padding:12px 20px;border-radius:8px;font-size:16px;cursor:pointer;font-weight:bold;
+    padding:16px 24px;border-radius:8px;font-size:18px;cursor:pointer;font-weight:bold;
     box-shadow:0 2px 6px rgba(0,0,0,0.3);transition:all 0.2s;
 }
 .player{position:absolute;display:flex;flex-direction:column;align-items:center;z-index:10}
@@ -53,7 +53,7 @@ body{
     width:300px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;
 }
 .play-cards{display:flex;gap:3px;min-height:75px;align-items:center;flex-wrap:wrap;justify-content:center}
-.play-info{font-size:16px;color:#ffd700;margin-top:12px;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.5);font-weight:bold}
+.play-info{font-size:18px;color:#ffd700;margin-top:12px;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.5);font-weight:bold}
 
 .player-cards{position:absolute;display:flex;gap:1px;z-index:5;flex-wrap:wrap;justify-content:center;max-width:180px}
 .player-cards.top-cards{top:120px;left:50%;transform:translateX(-50%)}
@@ -63,7 +63,7 @@ body{
 .hand-area{
     position:absolute;bottom:0;left:0;right:0;height:210px;
     background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.3) 20%,rgba(0,0,0,0.6) 100%);
-    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:40px;z-index:20;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:60px;z-index:20;
 }
 .hand-cards{display:flex;justify-content:center;align-items:flex-end;height:155px;position:relative;padding:0 15px}
 
@@ -119,7 +119,7 @@ body{
 
 .action-bar{display:flex;gap:8px;margin-top:6px;align-items:center}
 .action-btn{
-    padding:10px 20px;border-radius:8px;border:none;font-size:16px;font-weight:bold;cursor:pointer;
+    padding:10px 20px;border-radius:8px;border:none;font-size:18px;font-weight:bold;cursor:pointer;
     transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.3);text-shadow:0 1px 2px rgba(0,0,0,0.2);
 }
 .action-btn:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,0.4)}
@@ -153,7 +153,7 @@ body{
     border:2px solid #2196f3;max-width:450px;max-height:70vh;overflow-y:auto;
     box-shadow:0 15px 50px rgba(0,0,0,0.5);
 }
-.hint-box h3{font-size:16px;color:#2196f3;margin-bottom:12px}
+.hint-box h3{font-size:18px;color:#2196f3;margin-bottom:12px}
 .hint-options{display:flex;flex-direction:column;gap:8px}
 .hint-option{
     background:rgba(255,255,255,0.08);padding:8px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s;
@@ -827,13 +827,13 @@ function canBeat(pt, lp){
 }
 
 function smartSortCards(hand){
-    // v39：分组排序，三带二摆在一起
+    // v41：一键理牌，三带二摆在一起
     const vc={};
     for(let c of hand) if(!isWild(c)) vc[c.value]=(vc[c.value]||0)+1;
     
     const groups=[];
-    // 先放逢人配和王
-    const special = hand.filter(c=>isWild(c)||c.value==='大王'||c.value==='小王');
+    // 先放逢人配和王（从大到小）
+    const special = hand.filter(c=>isWild(c)||c.value==='大王'||c.value==='小王').sort((a,b)=>cv(b)-cv(a));
     if(special.length) groups.push({cards:special,label:''});
     
     // 找三张+对子
@@ -844,8 +844,8 @@ function smartSortCards(hand){
     for(let t of triples){
         for(let p of pairs){
             if(t!==p && !used.has(t) && !used.has(p)){
-                const triple = hand.filter(c=>c.value===t).slice(0,3);
-                const pair = hand.filter(c=>c.value===p).slice(0,2);
+                const triple = hand.filter(c=>c.value===t).slice(0,3).sort((a,b)=>cv(b)-cv(a));
+                const pair = hand.filter(c=>c.value===p).slice(0,2).sort((a,b)=>cv(b)-cv(a));
                 groups.push({cards:[...triple,...pair],label:''});
                 used.add(t); used.add(p);
                 break;
@@ -1082,8 +1082,8 @@ function renderHand(){
             hc.appendChild(card);
         }
     } else {
-        // 智能理牌模式：分组显示，也支持拖拽
-        const groups=smartSortCards(G.hands[0]);
+        // v41：默认普通排序，不自动理牌，只有点一键理牌才分组
+        const groups=[{cards:sortByVal(G.hands[0]),label:''}];
         for(let g of groups){
             const gd=document.createElement('div');
             gd.className='card-group';
@@ -1243,7 +1243,7 @@ function doPass(p){
     G.passCount++;
     const names=['你','下家','对家','上家'];
     document.getElementById('playInfo').textContent=names[p]+'不要';
-    const passHtml='<div style="color:#ffd700;font-size:16px;font-weight:bold;text-align:center;line-height:50px;text-shadow:0 1px 3px rgba(0,0,0,0.5);">不要</div>';
+    const passHtml='<div style="color:#ffd700;font-size:18px;font-weight:bold;text-align:center;line-height:50px;text-shadow:0 1px 3px rgba(0,0,0,0.5);">不要</div>';
     if(p===0) document.getElementById('playCards').innerHTML=passHtml;
     else if(p===1) document.getElementById('rightCards').innerHTML=passHtml;
     else if(p===2) document.getElementById('topCards').innerHTML=passHtml;
