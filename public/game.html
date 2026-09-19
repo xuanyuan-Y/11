@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v34（手机横屏优化版）</title>
+<title>港港掼蛋 v37（优化出牌逻辑）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
 body{
@@ -2258,6 +2258,12 @@ function showHint(){
 
 function closeHint(){
     document.getElementById('hintModal').classList.remove('show');
+}
+
+function exitGame() {
+    if(confirm("确定要退出游戏吗？")) {
+        window.location.href = "index.html";
+    }
 }
 
 window.onload=initGame;
