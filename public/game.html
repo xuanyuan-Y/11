@@ -826,12 +826,43 @@ function canBeat(pt, lp){
 }
 
 function smartSortCards(hand){
-    // 多乐掼蛋风格：简单从大到小排序，不分组
-    // 顺序：逢人配 → 大王 → 小王 → 级牌 → A → K → Q → J → 10 → 9 → 8 → 7 → 6 → 5 → 4 → 3 → 2（非级牌）
-    const sorted = sortByVal(hand);
-    return [{cards:sorted,label:''}];
+    // v39：分组排序，三带二摆在一起
+    const vc={};
+    for(let c of hand) if(!isWild(c)) vc[c.value]=(vc[c.value]||0)+1;
+    
+    const groups=[];
+    // 先放逢人配和王
+    const special = hand.filter(c=>isWild(c)||c.value==='大王'||c.value==='小王');
+    if(special.length) groups.push({cards:special,label:''});
+    
+    // 找三张+对子
+    const triples = Object.keys(vc).filter(v=>vc[v]>=3);
+    const pairs = Object.keys(vc).filter(v=>vc[v]>=2);
+    
+    const used = new Set();
+    for(let t of triples){
+        for(let p of pairs){
+            if(t!==p && !used.has(t) && !used.has(p)){
+                const triple = hand.filter(c=>c.value===t).slice(0,3);
+                const pair = hand.filter(c=>c.value===p).slice(0,2);
+                groups.push({cards:[...triple,...pair],label:'三带二'});
+                used.add(t); used.add(p);
+                break;
+            }
+        }
+    }
+    
+    // 剩下的按从大到小排
+    const rest = hand.filter(c=>{
+        if(isWild(c)||c.value==='大王'||c.value==='小王') return false;
+        if(used.has(c.value)) return false;
+        return true;
+    }).sort((a,b)=>cv(a)-cv(b));
+    
+    if(rest.length) groups.push({cards:rest,label:''});
+    
+    return groups;
 }
-
 function findHints(hand, lp){
     const res=[];
     const s=sortByVal(hand);
@@ -2285,6 +2316,7 @@ window.onload=initGame;
 </script>
 </body>
 </html>
+
 
 
 
