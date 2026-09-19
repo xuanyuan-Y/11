@@ -1,9 +1,9 @@
-﻿﻿﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v37（优化出牌逻辑）</title>
+<title>港港掼蛋 v38（修复AI压牌+界面优化）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
 body{
@@ -22,7 +22,7 @@ body{
 .top-bar .info span{background:rgba(255,255,255,0.12);padding:3px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.1)}
 .top-bar .restart-btn{
     background:linear-gradient(135deg,#ff9800,#e65100);color:#fff;border:none;
-    padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:bold;
+    padding:8px 16px;border-radius:8px;font-size:14px;cursor:pointer;font-weight:bold;
     box-shadow:0 2px 6px rgba(0,0,0,0.3);transition:all 0.2s;
 }
 .player{position:absolute;display:flex;flex-direction:column;align-items:center;z-index:10}
@@ -63,7 +63,7 @@ body{
 .hand-area{
     position:absolute;bottom:0;left:0;right:0;height:210px;
     background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.3) 20%,rgba(0,0,0,0.6) 100%);
-    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px;z-index:20;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:20px;z-index:20;
 }
 .hand-cards{display:flex;justify-content:center;align-items:flex-end;height:155px;position:relative;padding:0 15px}
 
@@ -1388,6 +1388,21 @@ function findAllBeats(h, lp){
 
 // 重写AI策略：国服玩家水平、记牌、队友配合、拦牌、合理使用炸弹
 function aiPlay(){
+    // v38：优先用王压级牌的逻辑
+    if(G.lastPlay && G.lastPlay.type==='single'){
+        const lpVal = G.lastPlay.val;
+        const levelVal = cv({value:String(G.level)});
+        // 如果出的是级牌或以下的单牌，优先用王压
+        if(lpVal <= levelVal){
+            const hand = G.hands[p];
+            // 有没有小王
+            const xw = hand.find(c=>c.value==='小王');
+            if(xw) return playCards([xw]);
+            // 有没有大王
+            const dw = hand.find(c=>c.value==='大王');
+            if(dw) return playCards([dw]);
+        }
+    }
     if(G.over) return;
     const p=G.current, hand=G.hands[p], lp=G.lastPlay;
     const isTeamMate=(player)=>{ return (p===0&&player===2)||(p===2&&player===0)||(p===1&&player===3)||(p===3&&player===1); };
@@ -2270,6 +2285,7 @@ window.onload=initGame;
 </script>
 </body>
 </html>
+
 
 
 
