@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v43（恢复绿色背景+修复对家牌位置+加大间距）</title>
+<title>港港掼蛋 v44（真正修复对家牌位置+确保绿色背景）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
 body{
-    background:radial-gradient(ellipse at center,#1e7a45 0%,#0d4f2c 60%,#072d18 100%);
+    background:radial-gradient(ellipse at center,#1e7a45 0%,#0d4f2c 60%,#072d18 100%) !important;
     font-family:'Microsoft YaHei','PingFang SC',sans-serif;
-    background:radial-gradient(ellipse at center,#1e7a45 0%,#0d4f2c 60%,#072d18 100%);
-    color:#fff;overflow:hidden;height:100vh;width:100vw;overflow:hidden;;position:relative;
+    color:#fff;overflow:hidden;height:100vh;width:100vw;position:relative;
 }
 .top-bar{
     position:absolute;top:0;left:0;right:0;height:40px;
@@ -57,14 +56,14 @@ body{
 .play-info{font-size:18px;color:#ffd700;margin-top:12px;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.5);font-weight:bold}
 
 .player-cards{position:absolute;display:flex;gap:1px;z-index:5;flex-wrap:wrap;justify-content:center;max-width:180px}
-.player-cards.top-cards{top:120px;left:50%;transform:translateX(-50%)}
+.player-cards.top-cards{top:150px;left:50%;transform:translateX(-50%)}
 .player-cards.left-cards{top:40%;left:60px;transform:translateY(-50%)}
 .player-cards.right-cards{top:40%;right:60px;transform:translateY(-50%)}
 
 .hand-area{
     position:absolute;bottom:0;left:0;right:0;height:210px;
     background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.3) 20%,rgba(0,0,0,0.6) 100%);
-    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:80px;z-index:20;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:100px;z-index:20;
 }
 .hand-cards{display:flex;justify-content:center;align-items:flex-end;height:155px;position:relative;padding:0 15px}
 
