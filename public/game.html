@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v42（修复BOM头+恢复正常）</title>
+<title>港港掼蛋 v43（恢复绿色背景+修复对家牌位置+加大间距）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
 body{
+    background:radial-gradient(ellipse at center,#1e7a45 0%,#0d4f2c 60%,#072d18 100%);
     font-family:'Microsoft YaHei','PingFang SC',sans-serif;
     background:radial-gradient(ellipse at center,#1e7a45 0%,#0d4f2c 60%,#072d18 100%);
-    color:#fff;overflow:hidden;height:100vh;width:100vw;position:relative;
+    color:#fff;overflow:hidden;height:100vh;width:100vw;overflow:hidden;;position:relative;
 }
 .top-bar{
     position:absolute;top:0;left:0;right:0;height:40px;
@@ -63,7 +64,7 @@ body{
 .hand-area{
     position:absolute;bottom:0;left:0;right:0;height:210px;
     background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.3) 20%,rgba(0,0,0,0.6) 100%);
-    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:60px;z-index:20;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:80px;z-index:20;
 }
 .hand-cards{display:flex;justify-content:center;align-items:flex-end;height:155px;position:relative;padding:0 15px}
 
