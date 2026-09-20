@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港港掼蛋 v45（彻底修复白色背景+对家牌不被遮挡）</title>
+<title>港港掼蛋 v46（竖屏适配+所有元素都在屏幕内+绿色背景）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none}
+html{background:#0d4f2c !important;}
+body{background:#0d4f2c !important;}
 body{background:#0d4f2c !important;
     background:radial-gradient(ellipse at center,#1e7a45 0%,#0d4f2c 60%,#072d18 100%) !important;
     font-family:'Microsoft YaHei','PingFang SC',sans-serif;
@@ -43,9 +45,9 @@ body{background:#0d4f2c !important;
 .player .name{font-size:13px;margin-top:4px;background:rgba(0,0,0,0.7);padding:3px 8px;border-radius:8px;font-weight:bold}
 .player .count{font-size:13px;color:#fff;margin-top:2px;font-weight:bold;text-shadow:0 1px 3px rgba(0,0,0,0.8)}
 .player .count.warn{color:#ff5252;font-size:15px;text-shadow:0 0 10px rgba(255,82,82,0.8)}
-.player.top{top:50px;left:50%;transform:translateX(-50%)}
-.player.left{top:40%;left:10px;transform:translateY(-50%)}
-.player.right{top:40%;right:10px;transform:translateY(-50%)}
+.player.top{top:30px;left:50%;transform:translateX(-50%)}
+.player.left{top:35%;left:5px;transform:translateY(-50%)}
+.player.right{top:35%;right:5px;transform:translateY(-50%)}
 .player.bottom{bottom:185px;left:50%;transform:translateX(-50%)}
 
 .play-area{
@@ -56,9 +58,9 @@ body{background:#0d4f2c !important;
 .play-info{font-size:18px;color:#ffd700;margin-top:12px;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.5);font-weight:bold}
 
 .player-cards{position:absolute;display:flex;gap:1px;z-index:5;flex-wrap:wrap;justify-content:center;max-width:180px}
-.player-cards.top-cards{top:180px;left:50%;transform:translateX(-50%)}
-.player-cards.left-cards{top:40%;left:60px;transform:translateY(-50%)}
-.player-cards.right-cards{top:40%;right:60px;transform:translateY(-50%)}
+.player-cards.top-cards{top:120px;left:50%;transform:translateX(-50%)}
+.player-cards.left-cards{top:35%;left:40px;transform:translateY(-50%)}
+.player-cards.right-cards{top:35%;right:40px;transform:translateY(-50%)}
 
 .hand-area{
     position:absolute;bottom:0;left:0;right:0;height:210px;
